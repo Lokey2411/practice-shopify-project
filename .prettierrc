@@ -12,6 +12,5 @@
 	"htmlWhitespaceSensitivity": "ignore",
 	"quoteProps": "consistent",
 	"proseWrap": "preserve",
-	"bracketSameLine": true,
-	"plugins": ["prettier-plugin-tailwindcss"]
+	"bracketSameLine": true
 }
