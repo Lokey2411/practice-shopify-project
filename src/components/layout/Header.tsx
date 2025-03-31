@@ -1,7 +1,7 @@
 import { Dropdown, Flex, Input, Menu, MenuProps } from 'antd'
 import { Link, useLocation } from 'react-router-dom'
 import { DownOutlined, HeartOutlined, SearchOutlined, ShoppingCartOutlined } from '@ant-design/icons'
-import clsx from 'clsx'
+import clsx from 'clsx';
 
 const navigationLabels = [
 	{
@@ -13,6 +13,10 @@ const navigationLabels = [
 		display: 'Contact',
 	},
 	{
+		path:'products',
+		display: 'Products',
+	},
+	{
 		path: '/about',
 		display: 'About',
 	},
@@ -20,6 +24,7 @@ const navigationLabels = [
 		path: '/sign-up',
 		display: 'Sign Up',
 	},
+	
 ]
 
 const iconClassName = 'text-2xl !text-black'
