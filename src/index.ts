@@ -1,6 +1,7 @@
 import express from "express";
 import routers from "./router";
 import { PREFIX_PATH } from "./constants";
+import app from "./app";
 
 const app = express();
 
@@ -14,4 +15,10 @@ routers.forEach((router) => {
 
 app.listen(8000, () => {
 	console.log("Server running on port 8000");
+});
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+	console.log(`Server is running on http://localhost:${PORT}`);
 });
