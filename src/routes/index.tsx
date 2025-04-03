@@ -6,6 +6,8 @@ import PrivateRoute from '@/components/PrivateRoute'
 import Cart from '@/pages/Cart'
 import WishList from '@/pages/WishList'
 import Contact from '@/pages/Contact'
+import Signup from '@/pages/Signup'
+import NotFound from '@/pages/NotFound'
 
 export default function AppRouter() {
 	return (
@@ -24,9 +26,11 @@ export default function AppRouter() {
 					<Route path='/about' element={<About />} />
 					<Route path='/contact' element={<Contact />} />
 					<Route path='/wishlist' element={<WishList />} />
+					<Route path='sign-up' element={<Signup />} />
 					<Route path='/' element={<PrivateRoute />}>
 						<Route path='/cart' element={<Cart />} />
 					</Route>
+					<Route path='*' element={<NotFound />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>

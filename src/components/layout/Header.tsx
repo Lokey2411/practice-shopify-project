@@ -13,7 +13,7 @@ const navigationLabels = [
 		display: 'Contact',
 	},
 	{
-		path:'products',
+		path:'/products',
 		display: 'Products',
 	},
 	{
