@@ -21,7 +21,7 @@ const navigationLabels = [
 		display: 'About',
 	},
 	{
-		path: '/sign-up',
+		path: '/signup',
 		display: 'Sign Up',
 	},
 	

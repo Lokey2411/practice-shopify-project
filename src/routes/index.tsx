@@ -8,11 +8,14 @@ import WishList from '@/pages/WishList'
 import Contact from '@/pages/Contact'
 import Signup from '@/pages/Signup'
 import NotFound from '@/pages/NotFound'
+import Login from '@/pages/Login'
+
 
 export default function AppRouter() {
 	return (
 		<BrowserRouter>
 			<Routes>
+				
 				<Route path='/' element={<LayoutApp />}>
 					<Route
 						index
@@ -26,10 +29,13 @@ export default function AppRouter() {
 					<Route path='/about' element={<About />} />
 					<Route path='/contact' element={<Contact />} />
 					<Route path='/wishlist' element={<WishList />} />
-					<Route path='sign-up' element={<Signup />} />
-					<Route path='/' element={<PrivateRoute />}>
-						<Route path='/cart' element={<Cart />} />
-					</Route>
+					<Route path='/signup' element={<Signup />} />
+					<Route path='/login' element={<Login />} /> 
+
+					
+					<Route path='/cart' element={<PrivateRoute><Cart /></PrivateRoute>} />
+
+					{/* Trang 404 */}
 					<Route path='*' element={<NotFound />} />
 				</Route>
 			</Routes>
