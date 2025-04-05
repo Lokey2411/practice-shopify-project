@@ -99,7 +99,7 @@ const footerItems = [
 
 export default function Footer() {
 	return (
-		<footer className='bg-black'>
+		<footer className='bg-black animate-fly-in'>
 			<Flex className='!px-app !py-20' justify='space-between' gap={80}>
 				{footerItems.map((items, index) => (
 					<FooterItem key={index + 0} items={items} />
