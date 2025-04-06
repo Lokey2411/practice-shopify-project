@@ -9,7 +9,14 @@
 		"outDir": "dist",
 		"baseUrl": "./",
 		"paths": {
-		  "@/*": ["./src/*"],
+		  	"@/*": ["./src/*"],
+			"@config/*": ["src/config/*"],
+			"@model/*": ["src/model/*"],
+			"@service/*": ["src/service/*"],
+			"@controller/*": ["src/controller/*"],
+			"@router/*": ["src/router/*"],
+			"@middleware/*": ["src/middleware/*"],
+			"@utils/*": ["src/utils/*"]
 		}
 	},
 	"include": [
