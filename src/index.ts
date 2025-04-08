@@ -41,7 +41,10 @@ app.get('/', (req, res) => {
 	res.send('Hello World')
 })
 
+console.log('router signing: ', routers)
+
 routers.forEach(router => {
+	console.log('router path: ', PREFIX_PATH + router.path)
 	app.use(PREFIX_PATH + router.path, router.router)
 })
 
