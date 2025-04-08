@@ -47,7 +47,14 @@ routers.forEach(router => {
 	console.log('router path: ', PREFIX_PATH + router.path)
 	app.use(PREFIX_PATH + router.path, router.router)
 })
-
+app.get('/debug', (req, res) => {
+	res.json({
+		message: 'Debug route',
+		routers: routers.map(r => `${PREFIX_PATH}${r.path}`),
+		env: process.env.NODE_ENV,
+		port: PORT,
+	})
+})
 startServer().catch(err => {
 	console.error('Server startup error:', err)
 	process.exit(1)
