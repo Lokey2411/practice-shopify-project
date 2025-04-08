@@ -1,3 +1,4 @@
+import 'tsconfig-paths/register'
 import express from 'express'
 import routers from './router'
 import cors from 'cors'
@@ -59,3 +60,4 @@ startServer().catch(err => {
 	console.error('Server startup error:', err)
 	process.exit(1)
 })
+export default app
