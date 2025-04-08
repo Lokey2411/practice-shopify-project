@@ -56,8 +56,10 @@ app.get('/debug', (req, res) => {
 		port: PORT,
 	})
 })
-startServer().catch(err => {
-	console.error('Server startup error:', err)
-	process.exit(1)
-})
+if (process.env.NODE_ENV === 'development') {
+	startServer().catch(err => {
+		console.error('Server startup error:', err)
+		process.exit(1)
+	})
+}
 export default app
