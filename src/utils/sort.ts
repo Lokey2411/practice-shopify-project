@@ -6,12 +6,15 @@ import { SortOrder } from 'mongoose'
  * @param allowedFields - Các trường được phép sắp xếp
  * @returns {Record<string, SortOrder>} - Đối tượng sắp xếp
  */
-export const applySort = (query: any, allowedFields: string[]): Record<string, SortOrder> => {
-    const sort: Record<string, SortOrder> = {}
+export const applySort = <T extends Object>(
+	query: { sortBy: keyof T; sortOrder: 'asc' | 'desc' } | {},
+	allowedFields: (keyof T)[],
+): Record<string, SortOrder> => {
+	const sort: Record<string, SortOrder> = {}
 
-    if (query.sortBy && allowedFields.includes(query.sortBy)) {
-        sort[query.sortBy] = query.sortOrder === 'desc' ? -1 : 1
-    }
+	if ('sortBy' in query && query.sortBy && allowedFields.includes(query.sortBy)) {
+		sort[query.sortBy as string] = query.sortOrder === 'desc' ? -1 : 1
+	}
 
-    return sort
+	return sort
 }

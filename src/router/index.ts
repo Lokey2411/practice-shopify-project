@@ -1,13 +1,24 @@
-import blogPostRouter from "./blog_posts";
-import userRouter from "./users.route";
-const routers = [
+import cartRouter from './cart.route'
+import category from './categories.route'
+import productRouter from './products.route'
+import userRouter from './users.route'
+
+const routes = [
 	{
-		path: "/users",
+		path: '/users',
 		router: userRouter,
 	},
 	{
-		path: "/blog_posts",
-		router: blogPostRouter,
+		path: '/categories',
+		router: category,
 	},
-];
-export default routers;
+	{
+		path: '/carts',
+		router: cartRouter,
+	},
+	{
+		path: '/products',
+		router: productRouter,
+	},
+]
+export default routes

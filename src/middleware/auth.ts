@@ -3,8 +3,16 @@ import jwt from 'jsonwebtoken'
 import { JWT_SECRET } from '@config/env'
 import { STATUS } from '@/constants'
 
-interface AuthRequest extends Request {
-    user?: any
+// Định nghĩa interface cho payload của JWT
+interface JwtPayload {
+	id: string | number
+	username?: string
+	[key: string]: any
+}
+
+// Mở rộng Request với generic params
+interface AuthRequest<P = any> extends Request<P> {
+	user?: JwtPayload
 }
 
 /**
@@ -12,19 +20,28 @@ interface AuthRequest extends Request {
  * @param req - Request từ client
  * @param res - Response trả về
  * @param next - Chuyển tiếp request
- * @returns {void | Response} - Không trả về gì nếu thành công, hoặc Response nếu có lỗi
  */
-export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction): void | Response => {
-    const token = req.header('Authorization')?.split(' ')[1]
+export const authMiddleware = <P = any>(req: AuthRequest<P>, res: Response, next: NextFunction): void => {
+	const authHeader = req.header('Authorization')
 
-    if (!token) {
-        return res.status(STATUS.UNAUTHORIZED).json({ message: 'Unauthorized - No token provided' })
-    }
+	if (!authHeader || !authHeader.startsWith('Bearer ')) {
+		res.status(STATUS.UNAUTHORIZED).json({ message: 'Unauthorized - No token provided' })
+		return
+	}
 
-    try {
-        req.user = jwt.verify(token, JWT_SECRET)
-        next()
-    } catch (error) {
-        return res.status(STATUS.UNAUTHORIZED).json({ message: 'Unauthorized - Invalid token' })
-    }
+	const token = authHeader.split(' ')[1]
+
+	if (!token) {
+		res.status(STATUS.UNAUTHORIZED).json({ message: 'Unauthorized - Invalid token format' })
+		return
+	}
+
+	try {
+		const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload
+		req.user = decoded
+		next()
+	} catch (error) {
+		res.status(STATUS.UNAUTHORIZED).json({ message: 'Unauthorized - Invalid token' })
+		return
+	}
 }
