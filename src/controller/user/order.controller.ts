@@ -2,12 +2,19 @@ import { Request, Response } from 'express'
 import { Order } from '@model/index'
 import { STATUS } from '@/constants'
 
+// Định nghĩa kiểu cho req.params
+interface OrderParams {
+    orderId: string
+}
+
 /**
  * Mua sản phẩm (chuyển status từ Pending sang Processing)
+ * @requires orderId - ID của đơn hàng (bắt buộc trong params)
  */
-export const purchaseProducts = async (req: Request, res: Response): Promise<void> => {
+export const purchaseProducts = async (req: Request<OrderParams>, res: Response) => {
     const { userId } = (req as any).user
     const { orderId } = req.params
+
     try {
         const order = await Order.findOneAndUpdate(
             { _id: orderId, userId, status: 'Pending', isDeleted: false },
@@ -15,11 +22,10 @@ export const purchaseProducts = async (req: Request, res: Response): Promise<voi
             { new: true },
         )
         if (!order) {
-            res.status(STATUS.NOT_FOUND).json({ message: 'Order not found' })
-            return
+            return res.status(STATUS.NOT_FOUND).json('Không tìm thấy đơn hàng')
         }
-        res.status(STATUS.OK).json({ message: 'Purchase successful' })
+        return res.json('Mua hàng thành công')
     } catch (error) {
-        res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: `Error purchasing products: ${error.message}` })
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi mua hàng: ${(error as Error).message}`)
     }
 }
