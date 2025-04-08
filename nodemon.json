@@ -2,6 +2,5 @@
 	"watch": ["src"],
 	"ext": "ts,json",
 	"ignore": ["node_modules", "dist"],
-	"exec": "nodemon -r tsconfig-paths/register -r ts-node/register src/index.ts"
-  }
-  
+	"exec": "node -r tsconfig-paths/register -r ts-node/register src/index.ts"
+}
