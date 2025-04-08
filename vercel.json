@@ -5,14 +5,15 @@
 			"src": "src/index.ts",
 			"use": "@vercel/node",
 			"config": {
-				"includeFiles": ["tsconfig.json"]
+				"buildCommand": "npm run build",
+				"outputDirectory": "dist"
 			}
 		}
 	],
 	"routes": [
 		{
 			"src": "/(.*)",
-			"dest": "/src/index.ts"
+			"dest": "/dist/index.js"
 		}
 	]
 }
