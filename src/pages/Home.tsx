@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ICategory } from './../types/ICategory'
 import axios from 'axios'
 import Slider from '@/components/Slider'
@@ -7,37 +7,36 @@ import CategoriesSection from '@/components/CategoriesSection'
 import { IProduct } from '@/types/IProduct'
 import { useNavigate } from 'react-router-dom'
 import FeaturesSectionAntd from '@/components/FeaturesSectionAntd'
+import { fakeProducts } from '@/services/fakeProducts'
+import CountdownHero from '@/components/CountdownHero'
+import { ShopContext } from '@/context/ProductContext'
 
 const Home = () => {
-  const navigate = useNavigate();
+	const {products} = useContext(ShopContext)
+	const navigate = useNavigate()
 	const [categories, setCategories] = useState<ICategory[]>([])
-  const [product,setProduct] = useState<IProduct[]>([])
+	const [product, setProduct] = useState<IProduct[]>([])
 	const getData = async () => {
-		const res = await axios.get('https://fakestoreapi.com/products/categories')
-		setCategories(
-			res.data.map((data: any, index: number) => ({
-				_id: index.toString(),
-				name: data,
-				image: '',
-				isNewArrival: false,
-				description: '',
-			})),
-		)
+		const res = await axios.get('https://be-kappa-sand.vercel.app/services/api/categories')
+		setCategories(res.data.data)
 	}
-  const getProducts = async () => {
-    const res = await axios.get('https://fakestoreapi.com/products')
-    setProduct(res.data.map((data: any) => ({
-      _id: data.id,
-      name: data.title,
-      categories: [],
-      images: [data.image],
-      price: data.price,
-      sizes: [],
-      colors: [],
-      description: data.description,
-    })))
+	const getProducts = async () => {
+		// const res = await axios.get('https://fakestoreapi.com/products')
+		// setProduct(
+		// 	res.data.map((data: any) => ({
+		// 		_id: data.id,
+		// 		name: data.title,
+		// 		categories: [],
+		// 		images: [data.image],
+		// 		price: data.price,
+		// 		sizes: [],
+		// 		colors: [],
+		// 		description: data.description,
+		// 	})),
+		// )
+		setProduct(fakeProducts.slice(0, 8))
+	}
 
-  }
 	useEffect(() => {
 		getData()
 		getProducts()
@@ -67,12 +66,33 @@ const Home = () => {
 				title='Flash Sales'
 				badge='Today’s'
 				showViewAll={true}
-				onViewAllClick={() => {navigate('/products')}}
+				onViewAllClick={() => {
+					navigate('/products')
+				}}
 				products={product}
 			/>
-      <hr className='my-8'/>
-      <CategoriesSection categories={categories} selectedCategory={''} onSelect={() => {}} />
-      <FeaturesSectionAntd/>
+			<hr className='my-8' />
+			<CategoriesSection categories={categories} selectedCategory={''} onSelect={() => {}} />
+			<ProductSection
+				title='Best Selling Products'
+				badge='This Month'
+				showViewAll={true}
+				onViewAllClick={() => {
+					navigate('/products')
+				}}
+				products={product}
+			/>
+			<CountdownHero />
+			<ProductSection
+				title='Best Selling Products'
+				badge='This Month'
+				showViewAll={true}
+				onViewAllClick={() => {
+					navigate('/products')
+				}}
+				products={product}
+			/>
+			<FeaturesSectionAntd />
 		</div>
 	)
 }

@@ -18,7 +18,7 @@ const ProductItem: React.FC<IProduct> = ({ name, price, images }) => {
 					</button>
 				</div>
 
-				<div className='w-full aspect-square'>
+				<div className='w-full'>
 					<Image
 						preview={false}
 						height={320}

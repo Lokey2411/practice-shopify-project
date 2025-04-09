@@ -22,8 +22,9 @@ const CategoriesSection: React.FC<Props> = ({ categories, selectedCategory, onSe
 
 					{
 						<div className='flex gap-2'>
-							<Button shape='circle' icon={<ArrowLeftOutlined />} className='arrow-btn' />
-							<Button shape='circle' icon={<ArrowRightOutlined />} className='arrow-btn' />
+							<button className='bg-red-500 text-white px-6 py-3 rounded hover:bg-red-600 transition text-sm font-medium'>
+								View All
+							</button>
 						</div>
 					}
 				</div>
