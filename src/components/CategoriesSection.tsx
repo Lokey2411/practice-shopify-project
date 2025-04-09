@@ -2,6 +2,7 @@ import React from 'react'
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
 import { ICategory } from '@/types/ICategory'
 import { Button } from 'antd'
+import Badge from './Badge'
 
 type Props = {
 	categories: ICategory[]
@@ -15,11 +16,7 @@ const CategoriesSection: React.FC<Props> = ({ categories, selectedCategory, onSe
 		<div className='w-full py-4'>
 			{/* Header */}
 			<div className=' mb-4'>
-				<div className='flex items-center gap-4'>
-					<span className='w-5 h-10 bg-red-500 rounded-sm'></span>
-					<span className='text-base font-semibold text-secondary-bg-2'>Categories</span>
-				</div>
-
+				<Badge badge='Categories' />
 				<div className='flex justify-between gap-3 mt-5'>
 					<h2 className='text-4xl font-semibold'>Browse By Category</h2>
 

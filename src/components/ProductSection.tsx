@@ -1,8 +1,9 @@
 import React from 'react'
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
+import {  Button } from 'antd'
 import { IProduct } from '@/types/IProduct'
 import ProductItem from '@/components/ProductItem'
+import Badge from './Badge'
 
 type ProductSectionProps = {
 	title: string
@@ -23,12 +24,7 @@ const ProductSection: React.FC<ProductSectionProps> = ({
 		<section className='w-full px-4 py-6'>
 			{/* Header */}
 			<div className='mb-4'>
-				{badge && (
-					<div className='flex items-center gap-2 mb-2'>
-						<div className='w-5 h-10 bg-red-500 rounded-sm' />
-						<span className='text-base font-semibold text-secondary-bg-2'>{badge}</span>
-					</div>
-				)}
+				{badge && <Badge badge={badge} />}
 
 				<div className='flex justify-between items-center gap-3'>
 					<h2 className='text-2xl sm:text-3xl font-semibold'>{title}</h2>
