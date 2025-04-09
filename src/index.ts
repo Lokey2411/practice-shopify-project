@@ -1,4 +1,3 @@
-import 'tsconfig-paths/register'
 import express from 'express'
 import routers from './router'
 import cors from 'cors'
@@ -56,10 +55,8 @@ app.get('/debug', (req, res) => {
 		port: PORT,
 	})
 })
-if (process.env.NODE_ENV === 'development') {
-	startServer().catch(err => {
-		console.error('Server startup error:', err)
-		process.exit(1)
-	})
-}
+startServer().catch(err => {
+	console.error('Server startup error:', err)
+	process.exit(1)
+})
 export default app
