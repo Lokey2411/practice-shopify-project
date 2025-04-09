@@ -9,6 +9,7 @@ import Contact from '@/pages/Contact'
 import Signup from '@/pages/Signup'
 import NotFound from '@/pages/NotFound'
 import Login from '@/pages/Login'
+import Home from '@/pages/Home'
 
 
 export default function AppRouter() {
@@ -20,9 +21,7 @@ export default function AppRouter() {
 					<Route
 						index
 						element={
-							<div className='min-h-screen'>
-								<h1 className='text-3xl'>Hello</h1>
-							</div>
+							<Home/>
 						}
 					/>
 					<Route path='/products' element={<Products />} />
