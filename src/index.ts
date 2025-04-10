@@ -1,6 +1,5 @@
 import express from 'express'
 import routers from './router'
-import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
 import dotenv from 'dotenv'
@@ -17,7 +16,6 @@ const app = express()
  * Cấu hình middleware cơ bản
  */
 app.use(express.json())
-app.use(cors())
 app.use(helmet())
 app.use(morgan('dev'))
 app.use(logger)

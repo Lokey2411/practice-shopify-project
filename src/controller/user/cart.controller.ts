@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Order } from '@model/index'
-import { STATUS } from '@/constants'
+import { CART_STATUS, STATUS } from '@/constants'
 import { applyFilter } from '@utils/filter'
 import { applySort } from '@utils/sort'
 import { OrderDocument } from '@/model/Order.Model'
@@ -12,7 +12,7 @@ interface CartParams {
 	productId: string
 }
 /**
- * Thêm sản phẩm vào giỏ hàng (tạo order với status 'Pending')
+ * Thêm sản phẩm vào giỏ hàng (tạo order với status CART_STATUS)
  * @requires products - Danh sách sản phẩm (bắt buộc)
  * @requires price - Tổng giá (bắt buộc)
  * @requires address - Địa chỉ giao hàng (bắt buộc)
@@ -26,7 +26,7 @@ export const addToCart = async (req: Request, res: Response) => {
 	}
 
 	try {
-		const order = new Order({ userId, products, price, address, status: 'Pending' })
+		const order = new Order({ userId, products, price, address, status: CART_STATUS })
 		await order.save()
 		return res.json('Thêm vào giỏ hàng thành công')
 	} catch (error) {
@@ -47,7 +47,7 @@ export const updateCart = async (req: Request<CartParams>, res: Response) => {
 
 	try {
 		const order = await Order.findOneAndUpdate(
-			{ _id: orderId, userId, status: 'Pending', isDeleted: false },
+			{ _id: orderId, userId, status: CART_STATUS, isDeleted: false },
 			req.body,
 			{ new: true },
 		)
@@ -70,7 +70,7 @@ export const removeFromCart = async (req: Request<CartParams>, res: Response) =>
 
 	try {
 		const order = await Order.findOneAndUpdate(
-			{ _id: orderId, userId, status: 'Pending', isDeleted: false },
+			{ _id: orderId, userId, status: CART_STATUS, isDeleted: false },
 			{ isDeleted: true },
 			{ new: true },
 		)
@@ -102,7 +102,7 @@ export const getCart = async (req: Request, res: Response) => {
 		}
 		const filter = applyFilter<OrderDocument>(filterQuery, ['products', 'price'])
 		filter.userId = userId
-		filter.status = 'Pending'
+		filter.status = CART_STATUS
 		const sort = applySort<OrderDocument>({ sortBy, sortOrder }, ['price', 'createdAt'])
 		const orders = await Order.find(filter).populate('products').sort(sort)
 		return res.json({ message: 'Lấy giỏ hàng thành công', data: orders })
@@ -136,7 +136,7 @@ export const getCartByCategory = async (req: Request<CartParams>, res: Response)
 		}
 		const filter = applyFilter<OrderDocument>(filterQuery, ['products', 'price'])
 		filter.userId = userId
-		filter.status = 'Pending'
+		filter.status = CART_STATUS
 		const sort = applySort<OrderDocument>({ sortBy, sortOrder }, ['price', 'createdAt'])
 		const orders = await Order.find(filter)
 			.populate({
@@ -162,7 +162,7 @@ export const getCartByProduct = async (req: Request<CartParams>, res: Response) 
 		const order = await Order.findOne({
 			userId,
 			products: productId,
-			status: 'Pending',
+			status: CART_STATUS,
 			isDeleted: false,
 		}).populate('products')
 		if (!order) {

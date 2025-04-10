@@ -3,11 +3,13 @@ import { Review } from '@model/index'
 import { STATUS } from '@/constants'
 import { applyFilter } from '@utils/filter'
 import { applySort } from '@utils/sort'
+import { ReviewDocument } from '@/model/Review.Model'
 
 // Định nghĩa kiểu cho req.params
 interface ReviewParams {
-    reviewId: string
-    productId: string
+	id: string
+	reviewId: string
+	productId: string
 }
 
 /**
@@ -18,20 +20,20 @@ interface ReviewParams {
  * @optional images - Hình ảnh
  */
 export const addReview = async (req: Request, res: Response) => {
-    const { userId } = (req as any).user
-    const { productId, rating } = req.body
+	const { userId } = (req as any).user
+	const { productId, rating } = req.body
 
-    if (!productId || !rating) {
-        return res.status(STATUS.BAD_REQUEST).json('ID sản phẩm và điểm đánh giá là bắt buộc')
-    }
+	if (!productId || !rating) {
+		return res.status(STATUS.BAD_REQUEST).json('ID sản phẩm và điểm đánh giá là bắt buộc')
+	}
 
-    try {
-        const review = new Review({ userId, productId, rating, ...req.body })
-        await review.save()
-        return res.json('Thêm đánh giá thành công')
-    } catch (error) {
-        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi thêm đánh giá: ${(error as Error).message}`)
-    }
+	try {
+		const review = new Review({ userId, productId, rating, ...req.body })
+		await review.save()
+		return res.json('Thêm đánh giá thành công')
+	} catch (error) {
+		return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi thêm đánh giá: ${(error as Error).message}`)
+	}
 }
 
 /**
@@ -42,22 +44,20 @@ export const addReview = async (req: Request, res: Response) => {
  * @optional images - Hình ảnh
  */
 export const updateReview = async (req: Request<ReviewParams>, res: Response) => {
-    const { userId } = (req as any).user
-    const { reviewId } = req.params
+	const { userId } = (req as any).user
+	const { id } = req.params
 
-    try {
-        const review = await Review.findOneAndUpdate(
-            { _id: reviewId, userId, isDeleted: false },
-            req.body,
-            { new: true },
-        )
-        if (!review) {
-            return res.status(STATUS.NOT_FOUND).json('Không tìm thấy đánh giá')
-        }
-        return res.json('Cập nhật đánh giá thành công')
-    } catch (error) {
-        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi cập nhật đánh giá: ${(error as Error).message}`)
-    }
+	try {
+		const reviewToUpdate = await Review.findOne({ _id: id, userId, isDeleted: false })
+		if (!reviewToUpdate) {
+			return res.status(STATUS.NOT_FOUND).json('Không tìm thấy đánh giá')
+		}
+		reviewToUpdate.set(req.body)
+		await reviewToUpdate.save()
+		return res.json('Cập nhật đánh giá thành công')
+	} catch (error) {
+		return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi cập nhật đánh giá: ${(error as Error).message}`)
+	}
 }
 
 /**
@@ -65,61 +65,51 @@ export const updateReview = async (req: Request<ReviewParams>, res: Response) =>
  * @requires reviewId - ID của đánh giá (bắt buộc trong params)
  */
 export const deleteReview = async (req: Request<ReviewParams>, res: Response) => {
-    const { userId } = (req as any).user
-    const { reviewId } = req.params
+	const { userId } = (req as any).user
+	const { id } = req.params
 
-    try {
-        const review = await Review.findOneAndUpdate(
-            { _id: reviewId, userId, isDeleted: false },
-            { isDeleted: true },
-            { new: true },
-        )
-        if (!review) {
-            return res.status(STATUS.NOT_FOUND).json('Không tìm thấy đánh giá')
-        }
-        return res.json('Xóa đánh giá thành công')
-    } catch (error) {
-        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi xóa đánh giá: ${(error as Error).message}`)
-    }
+	try {
+		const reviewToUpdate = await Review.findOne({ _id: id, userId, isDeleted: false })
+		if (!reviewToUpdate) {
+			return res.status(STATUS.NOT_FOUND).json('Không tìm thấy đánh giá')
+		}
+		reviewToUpdate.set({ isDeleted: true })
+		await reviewToUpdate.save()
+		return res.json('Xóa đánh giá thành công')
+	} catch (error) {
+		return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi xóa đánh giá: ${(error as Error).message}`)
+	}
 }
 
-/**
- * Lấy danh sách đánh giá của sản phẩm
- * @requires productId - ID của sản phẩm (bắt buộc trong params)
- * @optional filter - Lọc theo rating
- * @optional sortBy - Sắp xếp theo rating, createdAt
- * @optional sortOrder - Thứ tự sắp xếp (asc/desc)
- */
-export const getReviewsByProduct = async (req: Request<ReviewParams>, res: Response) => {
-    const { productId } = req.params
-
-    try {
-        const filter = applyFilter(req.query, ['rating'])
-        filter.productId = productId
-        const sort = applySort(req.query, ['rating', 'createdAt'])
-        const reviews = await Review.find(filter).populate('userId').sort(sort)
-        return res.json({ message: 'Lấy danh sách đánh giá thành công', data: reviews })
-    } catch (error) {
-        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi lấy đánh giá: ${(error as Error).message}`)
-    }
+export const getAllReviews = async (req: Request, res: Response) => {
+	try {
+		const requestQuery = req.query as any
+		const filterQuery: ReviewDocument = {
+			_id: requestQuery._id,
+			productId: requestQuery.productId,
+			userId: requestQuery.userId,
+			rating: requestQuery.rating,
+		}
+		const { sortBy, sortOrder } = req.query
+		const filter = applyFilter<ReviewDocument>(filterQuery, ['productId', 'userId', 'rating'])
+		const sort = applySort<ReviewDocument>({ sortBy, sortOrder }, ['rating', 'createdAt'])
+		const reviews = await Review.find(filter).populate('userId productId').sort(sort)
+		return res.json({ message: 'Lấy danh sách tất cả đánh giá thành công', data: reviews })
+	} catch (error) {
+		return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi lấy đánh giá: ${(error as Error).message}`)
+	}
 }
 
-/**
- * Lấy đánh giá theo User ID
- * @optional filter - Lọc theo productId, rating
- * @optional sortBy - Sắp xếp theo rating, createdAt
- * @optional sortOrder - Thứ tự sắp xếp (asc/desc)
- */
-export const getReviewsByUser = async (req: Request, res: Response) => {
-    const { userId } = (req as any).user
+export const getReviewById = async (req: Request<ReviewParams>, res: Response) => {
+	const { reviewId } = req.params
 
-    try {
-        const filter = applyFilter(req.query, ['productId', 'rating'])
-        filter.userId = userId
-        const sort = applySort(req.query, ['rating', 'createdAt'])
-        const reviews = await Review.find(filter).populate('productId').sort(sort)
-        return res.json({ message: 'Lấy đánh giá theo user thành công', data: reviews })
-    } catch (error) {
-        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi lấy đánh giá: ${(error as Error).message}`)
-    }
+	try {
+		const review = await Review.findOne({ _id: reviewId, isDeleted: false })
+		if (!review) {
+			return res.status(STATUS.NOT_FOUND).json('Không tìm thấy đánh giá')
+		}
+		return res.json({ message: 'Lấy đánh giá theo id thông', data: review })
+	} catch (error) {
+		return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi lấy đánh giá: ${(error as Error).message}`)
+	}
 }

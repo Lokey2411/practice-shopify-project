@@ -9,12 +9,13 @@ import {
 import { authMiddleware } from '@/middleware/auth'
 import { asyncHandler } from '@/middleware/asyncHandler'
 import { Router } from 'express'
+import { adminRequire } from '@/middleware/adminRequire'
 const productRouter = Router()
 
 productRouter.get('/', asyncHandler(getAllProducts))
-productRouter.post('/', authMiddleware, asyncHandler(addProduct))
-productRouter.put('/:id', authMiddleware, asyncHandler(updateProduct))
-productRouter.delete('/:id', authMiddleware, asyncHandler(deleteProduct))
+productRouter.post('/', authMiddleware, adminRequire, asyncHandler(addProduct))
+productRouter.put('/:id', authMiddleware, adminRequire, asyncHandler(updateProduct))
+productRouter.delete('/:id', authMiddleware, adminRequire, asyncHandler(deleteProduct))
 productRouter.get('/:id', asyncHandler(getProductById))
 productRouter.get('/category/:categoryId', asyncHandler(getProductsByCategory))
 

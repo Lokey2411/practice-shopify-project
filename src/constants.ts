@@ -1,6 +1,12 @@
 export const PREFIX_PATH = '/services/api'
 export const PORT = 8000
-export const STATUS = {
+type Status = {
+	[key: string]: number
+}
+
+export const CART_STATUS = 'in cart'
+
+export const STATUS: Status = {
 	OK: 200,
 	BAD_REQUEST: 400,
 	UNAUTHORIZED: 401,
