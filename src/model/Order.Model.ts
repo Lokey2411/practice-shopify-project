@@ -1,21 +1,32 @@
 import mongoose, { Schema, Document, InferSchemaType, Types } from 'mongoose'
 
 export interface IOrder extends Document {
-	userId: mongoose.Types.ObjectId
-	products: mongoose.Types.ObjectId[]
-	price: string
-	status: string
+	userId: Types.ObjectId
+	products: { productId: Types.ObjectId; quantity: number }[]
+	price: number
+	status: 'Pending' | 'Processing' | 'Completed' | 'Cancelled'
 	address: string
 	isDeleted: boolean
+	createdAt: Date
+	updatedAt: Date
 }
 
-export const OrderSchema: Schema = new Schema(
+const OrderSchema: Schema = new Schema(
 	{
 		userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-		products: [{ type: Schema.Types.ObjectId, ref: 'Product', required: true }],
-		price: { type: String, required: true },
-		status: { type: String, enum: ['Pending', 'Processing', 'Completed', 'Cancelled'], default: 'Pending' },
-		address: { type: String, required: true },
+		products: [
+			{
+				productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+				quantity: { type: Number, required: true, min: 1 },
+			},
+		],
+		price: { type: Number, required: true, min: 0 },
+		status: {
+			type: String,
+			enum: ['Pending', 'Processing', 'Completed', 'Cancelled'],
+			default: 'Pending',
+		},
+		address: { type: String, required: true, trim: true },
 		isDeleted: { type: Boolean, default: false },
 	},
 	{ timestamps: true },

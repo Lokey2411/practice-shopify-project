@@ -4,7 +4,7 @@ type Status = {
 	[key: string]: number
 }
 
-export const CART_STATUS = 'in cart'
+export const CART_STATUS = 'Pending'
 
 export const STATUS: Status = {
 	OK: 200,

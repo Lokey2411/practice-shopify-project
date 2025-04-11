@@ -16,6 +16,6 @@ saleRouter.get('/', asyncHandler(getAllSales))
 saleRouter.post('/', authMiddleware, adminRequire, asyncHandler(addSale))
 saleRouter.put('/:id', authMiddleware, adminRequire, asyncHandler(updateSale))
 saleRouter.delete('/:id', authMiddleware, adminRequire, asyncHandler(deleteSale))
-saleRouter.get('/:id', asyncHandler(getSaleById))
+saleRouter.get('/:id', authMiddleware, adminRequire, asyncHandler(getSaleById))
 saleRouter.get('/category/:categoryId', asyncHandler(getSalesByCategory))
 export default saleRouter
