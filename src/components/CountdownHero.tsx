@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Image } from 'antd'
+import { Col, Image } from 'antd'
 
 interface TimeLeft {
 	days: number
@@ -9,7 +9,6 @@ interface TimeLeft {
 }
 
 const CountdownHero: React.FC = () => {
-	// 👇 Đặt mốc thời gian mục tiêu cố định tại đây
 	const targetDate = new Date().getTime() + 5 * 24 * 60 * 60 * 1000
 
 	const calculateTimeLeft = (): TimeLeft => {
@@ -41,11 +40,11 @@ const CountdownHero: React.FC = () => {
 		const timer = setInterval(() => {
 			setTimeLeft(calculateTimeLeft())
 		}, 1000)
-
 		return () => clearInterval(timer)
 	}, [])
 
-	const timeBlock = (value: number, label: string) => (
+	// 👉 Component từng vòng tròn
+	const TimeCircle = (value: number, label: string) => (
 		<div className='flex flex-col items-center justify-center w-20 h-20 bg-white text-black rounded-full shadow-md'>
 			<span className='font-bold text-lg'>{String(value).padStart(2, '0')}</span>
 			<span className='text-xs'>{label}</span>
@@ -64,12 +63,12 @@ const CountdownHero: React.FC = () => {
 						Music Experience
 					</h1>
 
-					{/* Countdown */}
+					{/* ✅ Custom Countdown */}
 					<div className='flex gap-4 my-6'>
-						{timeBlock(timeLeft.days, 'Days')}
-						{timeBlock(timeLeft.hours, 'Hours')}
-						{timeBlock(timeLeft.minutes, 'Minutes')}
-						{timeBlock(timeLeft.seconds, 'Seconds')}
+						{TimeCircle(timeLeft.hours, 'Hours')}
+						{TimeCircle(timeLeft.days, 'Days')}
+						{TimeCircle(timeLeft.minutes, 'Minutes')}
+						{TimeCircle(timeLeft.seconds, 'Seconds')}
 					</div>
 
 					{/* CTA */}

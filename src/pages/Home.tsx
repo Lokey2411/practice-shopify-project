@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { ICategory } from './../types/ICategory'
 import axios from 'axios'
 import Slider from '@/components/Slider'
@@ -7,40 +7,20 @@ import CategoriesSection from '@/components/CategoriesSection'
 import { IProduct } from '@/types/IProduct'
 import { useNavigate } from 'react-router-dom'
 import FeaturesSectionAntd from '@/components/FeaturesSectionAntd'
-import { fakeProducts } from '@/services/fakeProducts'
 import CountdownHero from '@/components/CountdownHero'
 import { ShopContext } from '@/context/ProductContext'
+import { useFetch } from '@/hooks/useFetch'
+import { Skeleton } from 'antd'
 
 const Home = () => {
-	const {products} = useContext(ShopContext)
+	const {data: products} = useFetch<IProduct[]>('/products');
+	const {data: categories} = useFetch<ICategory[]>('/categories')
 	const navigate = useNavigate()
-	const [categories, setCategories] = useState<ICategory[]>([])
-	const [product, setProduct] = useState<IProduct[]>([])
-	const getData = async () => {
-		const res = await axios.get('https://be-kappa-sand.vercel.app/services/api/categories')
-		setCategories(res.data.data)
-	}
-	const getProducts = async () => {
-		// const res = await axios.get('https://fakestoreapi.com/products')
-		// setProduct(
-		// 	res.data.map((data: any) => ({
-		// 		_id: data.id,
-		// 		name: data.title,
-		// 		categories: [],
-		// 		images: [data.image],
-		// 		price: data.price,
-		// 		sizes: [],
-		// 		colors: [],
-		// 		description: data.description,
-		// 	})),
-		// )
-		setProduct(fakeProducts.slice(0, 8))
-	}
-
-	useEffect(() => {
-		getData()
-		getProducts()
-	}, [])
+	
+	const product = useMemo(()=>{
+		return products?.slice(0,3) ?? [];
+	},[products])
+	if(!products || !categories) return<Skeleton active />
 
 	return (
 		<div className='!pt-10 !pb-4 !px-app  py-6'>

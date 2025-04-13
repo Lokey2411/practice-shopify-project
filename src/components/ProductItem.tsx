@@ -23,7 +23,7 @@ const ProductItem: React.FC<IProduct> = ({ name, price, images }) => {
 						preview={false}
 						height={320}
 						className='w-full object-cover h-80 rounded-md'
-						src={images[0]}
+						src={images[0] || 'https://placehold.co/400x400'} 
 						alt={name}
 						loading='lazy'
 					/>
