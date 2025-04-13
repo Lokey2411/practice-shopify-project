@@ -25,7 +25,9 @@ const Contact: React.FC = () => {
 										</div>
 										<h3 className='font-semibold text-lg'>Call To Us</h3>
 									</div>
-									<p className='text-sm text-text-2 mt-1 font-bold'>Phone: +8801611112222</p>
+									<a href='tel:+8801611112222' className='text-sm text-text-2 mt-1 font-bold hover:underline'>
+										Phone: +8801611112222
+									</a>
 								</div>
 
 								<hr className='mt-6' />
@@ -41,8 +43,17 @@ const Contact: React.FC = () => {
 									<p className='text-sm text-text-2 font-bold'>
 										Fill out our form and we will contact you within 24 hours.
 									</p>
-									<p className='text-sm text-text-2 mt-1 font-bold'>Emails: customer@exclusive.com</p>
-									<p className='text-sm text-text-2 font-bold'>support@exclusive.com</p>
+									<p className='text-sm text-text-2 mt-1 font-bold'>
+										Emails:{' '}
+										<a href='mailto:customer@exclusive.com' className='hover:underline'>
+											customer@exclusive.com
+										</a>
+									</p>
+									<p className='text-sm text-text-2 font-bold'>
+										<a href='mailto:support@exclusive.com' className='hover:underline'>
+											support@exclusive.com
+										</a>
+									</p>
 								</div>
 							</div>
 						</div>

@@ -1,5 +1,5 @@
 import { Image } from 'antd'
-import login from '@/assets/login.jpg'
+import login from '@/assets/images/login.jpg'
 import { GoogleOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import Breadcrumbs from '@/components/Breadcrumbs'
