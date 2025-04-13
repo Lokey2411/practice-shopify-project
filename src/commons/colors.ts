@@ -10,4 +10,5 @@ export const colors = {
     "button-2-bg":"#DB4444",
     "button-hover-1-bg": "#E07575",
     "button-hover-2-bg": "#A0BCE0",
+    "text-2":"#000000"
 }
