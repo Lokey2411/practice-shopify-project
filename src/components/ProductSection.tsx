@@ -21,7 +21,7 @@ const ProductSection: React.FC<ProductSectionProps> = ({
 	products,
 }) => {
 	return (
-		<section className='w-full px-4 py-6'>
+		<section className='w-full my-5'>
 			{/* Header */}
 			<div className='mb-4'>
 				{badge && <Badge badge={badge} />}

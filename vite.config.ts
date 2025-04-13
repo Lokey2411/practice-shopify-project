@@ -10,4 +10,12 @@ export default defineConfig({
 			'@': path.resolve(__dirname, 'src'),
 		},
 	},
+	server: {
+		proxy: {
+			'/services/api': {
+				target: 'https://be-kappa-sand.vercel.app',
+				changeOrigin: true,
+			},
+		},
+	},
 })

@@ -7,7 +7,7 @@ const iconClassName = 'bg-white  rounded-full shadow-md hover:bg-gray-100 size-7
 
 const ProductItem: React.FC<IProduct> = ({ name, price, images }) => {
 	return (
-		<div className='max-w-xs p-3 group bg-white rounded-lg shadow-lg'>
+		<div className='max-w-xs p-3 group bg-white rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300'>
 			<div className='relative'>
 				<div className='absolute top-2 right-2 flex flex-col gap-2 z-10'>
 					<button aria-label='Like' className={iconClassName}>
@@ -18,12 +18,12 @@ const ProductItem: React.FC<IProduct> = ({ name, price, images }) => {
 					</button>
 				</div>
 
-				<div className='w-full aspect-square'>
+				<div className='w-full'>
 					<Image
 						preview={false}
 						height={320}
 						className='w-full object-cover h-80 rounded-md'
-						src={images[0]}
+						src={images[0] || 'https://placehold.co/400x400'}
 						alt={name}
 						loading='lazy'
 					/>
