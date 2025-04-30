@@ -1,6 +1,6 @@
-const reosourcesName = ["blog_posts", "categories", "users"];
+const reosourcesName = ['categories', 'products', 'users']
 
-export const resources = reosourcesName.map((name) => ({
+export const resources = reosourcesName.map(name => ({
 	name,
 	list: `/${name}`,
 	create: `/${name}/create`,
@@ -9,4 +9,4 @@ export const resources = reosourcesName.map((name) => ({
 	meta: {
 		canDelete: true,
 	},
-}));
+}))

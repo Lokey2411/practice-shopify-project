@@ -3,7 +3,7 @@ import type { BaseRecord } from '@refinedev/core'
 import { Space, Table } from 'antd'
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 
-export const CategoryList = () => {
+export const ProductList = () => {
 	const { tableProps } = useTable({
 		syncWithLocation: true,
 	})
@@ -12,17 +12,9 @@ export const CategoryList = () => {
 		<List>
 			<Table {...tableProps} rowKey='id'>
 				<Table.Column dataIndex='name' title={'Name'} />
-				<Table.Column
-					dataIndex={'isNewArrival'}
-					title={'New Arrival'}
-					render={(isNewArrival: BaseRecord) => (
-						<BooleanField
-							value={isNewArrival}
-							trueIcon={<CheckCircleOutlined className='text-2xl' />}
-							falseIcon={<CloseCircleOutlined className='text-2xl' />}
-						/>
-					)}
-				/>
+				<Table.Column dataIndex={'price'} title={'Price'} />
+				<Table.Column dataIndex={'sizes'} title={'Sizes'} render={(sizes: string[]) => sizes.join(', ')} />
+				<Table.Column dataIndex={'colors'} title={'Colors'} render={(colors: string[]) => colors.join(', ')} />
 				<Table.Column
 					title={'Actions'}
 					dataIndex='actions'
