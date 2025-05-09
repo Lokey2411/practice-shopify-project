@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { ICategory } from './../types/ICategory'
-import axios from 'axios'
 import Slider from '@/components/Slider'
 import ProductSection from '@/components/ProductSection'
 import CategoriesSection from '@/components/CategoriesSection'
@@ -8,19 +7,19 @@ import { IProduct } from '@/types/IProduct'
 import { useNavigate } from 'react-router-dom'
 import FeaturesSectionAntd from '@/components/FeaturesSectionAntd'
 import CountdownHero from '@/components/CountdownHero'
-import { ShopContext } from '@/context/ProductContext'
 import { useFetch } from '@/hooks/useFetch'
 import { Skeleton } from 'antd'
+import Http from '@/services/Api'
 
 const Home = () => {
-	const {data: products} = useFetch<IProduct[]>('/products');
-	const {data: categories} = useFetch<ICategory[]>('/categories')
+	const { data: products } = useFetch<IProduct[]>('/products')
+	const { data: categories } = useFetch<ICategory[]>('/categories')
 	const navigate = useNavigate()
-	
-	const product = useMemo(()=>{
-		return products?.slice(0,3) ?? [];
-	},[products])
-	if(!products || !categories) return<Skeleton active />
+
+	const product = useMemo(() => {
+		return products?.slice(0, 3) ?? []
+	}, [products])
+	if (!products || !categories) return <Skeleton active />
 
 	return (
 		<div className='!pt-10 !pb-4 !px-app  py-6'>

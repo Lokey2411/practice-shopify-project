@@ -12,7 +12,7 @@ const contentStyle: React.CSSProperties = {
 }
 
 const Slider: React.FC = () => (
-	<Carousel autoplay={{ dotDuration: true }} autoplaySpeed={5000}>
+	<Carousel autoplay={{ dotDuration: true }} autoplaySpeed={5000} draggable infinite>
 		<div>
 			<h3 style={contentStyle}>1</h3>
 		</div>
