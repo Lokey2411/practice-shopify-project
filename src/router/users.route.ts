@@ -17,7 +17,7 @@ userRouter.get('/:id', authMiddleware, getUserById)
 userRouter.post('/admin/login', adminLogin)
 userRouter.post('/admin/register', adminRegister)
 userRouter.post('/user/login', userLogin)
-userRouter.post('/user/login', userRegister)
+userRouter.post('/user/register', userRegister)
 
 // check token
 userRouter.post('/token', authMiddleware, (req, res) => {

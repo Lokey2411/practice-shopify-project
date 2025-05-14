@@ -1,5 +1,4 @@
 // src/controller/upload.ts
-import { BASE_URL } from '@/config/env'
 import { PREFIX_PATH } from '@/constants'
 import mongoose from 'mongoose'
 import multer from 'multer'
