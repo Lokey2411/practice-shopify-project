@@ -1,7 +1,7 @@
 import React from 'react'
-import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
+
 import { ICategory } from '@/types/ICategory'
-import { Button } from 'antd'
+
 import Badge from './Badge'
 
 type Props = {
@@ -37,10 +37,9 @@ const CategoriesSection: React.FC<Props> = ({ categories, selectedCategory, onSe
 						key={cat.name}
 						onClick={() => onSelect(cat.name)}
 						className={`min-w-[120px] flex flex-col items-center justify-center border rounded-md px-4 py-6 text-sm transition-all
-              ${
-								selectedCategory === cat.name
-									? 'bg-red-500 text-white border-red-500'
-									: 'bg-white text-black border-gray-300 hover:border-red-400'
+              ${selectedCategory === cat.name
+								? 'bg-red-500 text-white border-red-500'
+								: 'bg-white text-black border-gray-300 hover:border-red-400'
 							}
             `}>
 						<div className='text-2xl mb-2'>{cat.icon}</div>

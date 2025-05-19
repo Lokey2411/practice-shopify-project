@@ -9,7 +9,6 @@ import FeaturesSectionAntd from '@/components/FeaturesSectionAntd'
 import CountdownHero from '@/components/CountdownHero'
 import { useFetch } from '@/hooks/useFetch'
 import { Skeleton } from 'antd'
-import Http from '@/services/Api'
 
 const Home = () => {
 	const { data: products } = useFetch<IProduct[]>('/products')
@@ -29,7 +28,7 @@ const Home = () => {
 					<h3 className='text-lg font-semibold mb-3'>Danh mục</h3>
 					<ul className='space-y-2'>
 						{categories.map((item, index) => (
-							<li key={index} className='text-gray-700 hover:text-black cursor-pointer'>
+							<li key={index + 0} className='text-gray-700 hover:text-black cursor-pointer'>
 								{item.name}
 							</li>
 						))}
