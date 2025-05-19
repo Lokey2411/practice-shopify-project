@@ -3,4 +3,4 @@ const Http = axios.create({
   baseURL: "/services/api",
   withCredentials: true,
 });
-export default Http;
+export default Http; 

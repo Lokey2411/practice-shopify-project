@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import { ICategory } from './../types/ICategory'
 import axios from 'axios'
 import Slider from '@/components/Slider'
@@ -8,19 +8,18 @@ import { IProduct } from '@/types/IProduct'
 import { useNavigate } from 'react-router-dom'
 import FeaturesSectionAntd from '@/components/FeaturesSectionAntd'
 import CountdownHero from '@/components/CountdownHero'
-import { ShopContext } from '@/context/ProductContext'
 import { useFetch } from '@/hooks/useFetch'
 import { Skeleton } from 'antd'
 
 const Home = () => {
-	const {data: products} = useFetch<IProduct[]>('/products');
-	const {data: categories} = useFetch<ICategory[]>('/categories')
+	const { data: products } = useFetch<IProduct[]>('/products');
+	const { data: categories } = useFetch<ICategory[]>('/categories')
 	const navigate = useNavigate()
-	
-	const product = useMemo(()=>{
-		return products?.slice(0,3) ?? [];
-	},[products])
-	if(!products || !categories) return<Skeleton active />
+
+	const product = useMemo(() => {
+		return products?.slice(0, 3) ?? [];
+	}, [products])
+	if (!products || !categories) return <Skeleton active />
 
 	return (
 		<div className='!pt-10 !pb-4 !px-app  py-6'>
@@ -52,7 +51,7 @@ const Home = () => {
 				products={product}
 			/>
 			<hr className='my-8' />
-			<CategoriesSection categories={categories} selectedCategory={''} onSelect={() => {}} />
+			<CategoriesSection categories={categories} selectedCategory={''} onSelect={() => { }} />
 			<ProductSection
 				title='Best Selling Products'
 				badge='This Month'

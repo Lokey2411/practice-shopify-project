@@ -14,6 +14,8 @@ export default function LayoutApp() {
 				onClick={() => window.scroll({ top: 0, behavior: 'smooth' })}
 				className='!bg-secondary-bg'
 			/>
+
+			<FloatButton.BackTop />
 		</>
 	)
 }
