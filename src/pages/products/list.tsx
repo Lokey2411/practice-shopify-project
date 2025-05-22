@@ -1,7 +1,6 @@
-import { BooleanField, DeleteButton, EditButton, List, ShowButton, useTable } from '@refinedev/antd'
+import { DeleteButton, EditButton, List, ShowButton, useTable } from '@refinedev/antd'
 import type { BaseRecord } from '@refinedev/core'
 import { Space, Table } from 'antd'
-import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 
 export const ProductList = () => {
 	const { tableProps } = useTable({
@@ -13,8 +12,10 @@ export const ProductList = () => {
 			<Table {...tableProps} rowKey='id'>
 				<Table.Column dataIndex='name' title={'Name'} />
 				<Table.Column dataIndex={'price'} title={'Price'} />
-				<Table.Column dataIndex={'sizes'} title={'Sizes'} render={(sizes: string[]) => sizes.join(', ')} />
-				<Table.Column dataIndex={'colors'} title={'Colors'} render={(colors: string[]) => colors.join(', ')} />
+				<Table.Column dataIndex={'author'} title={'Author'} />
+				<Table.Column dataIndex={'publisher'} title={'Publisher'} />
+				<Table.Column dataIndex={'publishedDate'} title={'Published date'} />
+				<Table.Column dataIndex={'numPage'} title={'Pages'} />
 				<Table.Column
 					title={'Actions'}
 					dataIndex='actions'

@@ -43,7 +43,7 @@ export const dataProvider: DataProvider = {
 			},
 		})
 		return {
-			data: response.data.data,
+			data: response.data.data.map(item => ({ ...item, id: item._id })),
 			total: response.data.total,
 		}
 	},
@@ -58,7 +58,7 @@ export const dataProvider: DataProvider = {
 				},
 			},
 		})
-		return { data: response.data }
+		return { data: { ...response.data.data, id: response.data.data._id } }
 	},
 
 	create: async <TData extends BaseRecord, TVariables = {}>({ resource, variables }: CreateParams<TVariables>) => {
@@ -87,14 +87,17 @@ export const dataProvider: DataProvider = {
 			id: baseKeyId,
 			...rest,
 			meta: {
+				method: 'put',
 				headers: {
 					...createHeader(`${getToken()}`),
 				},
 			},
 		})
+
 		return { data: response.data }
 	},
 	deleteOne: async ({ resource, id }) => {
+		console.log(id)
 		return await defaultProvider.deleteOne({
 			resource,
 			id,
@@ -118,3 +121,4 @@ export const dataProvider: DataProvider = {
 	},
 	getApiUrl: () => defaultProvider.getApiUrl(),
 }
+console.log('defaultProvider.update', defaultProvider.update)

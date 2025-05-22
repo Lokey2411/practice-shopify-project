@@ -12,6 +12,7 @@ import { ColorModeContextProvider } from './contexts/color-mode'
 import { resources } from './commons/resources'
 import { dataProvider } from './services/dataProvider'
 import AppRoute from './routes'
+import { authProvider } from './services/authProvider'
 
 function App() {
 	return (
@@ -24,6 +25,7 @@ function App() {
 							<DevtoolsProvider>
 								<Refine
 									dataProvider={dataProvider}
+									authProvider={authProvider}
 									notificationProvider={useNotificationProvider}
 									routerProvider={routerBindings}
 									resources={resources}

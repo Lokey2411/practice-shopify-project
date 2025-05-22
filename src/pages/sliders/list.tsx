@@ -1,10 +1,9 @@
-import { BooleanField, EditButton, List, ShowButton, useTable } from '@refinedev/antd'
+import { BooleanField, DeleteButton, EditButton, List, ShowButton, useTable } from '@refinedev/antd'
 import type { BaseRecord } from '@refinedev/core'
 import { Space, Table } from 'antd'
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
-import DeleteButton from '@/components/DeleteButton'
 
-export const CategoryList = () => {
+export const SliderList = () => {
 	const { tableProps } = useTable({
 		syncWithLocation: true,
 	})
@@ -12,18 +11,9 @@ export const CategoryList = () => {
 	return (
 		<List>
 			<Table {...tableProps} rowKey='id'>
-				<Table.Column dataIndex='name' title={'Name'} />
-				<Table.Column
-					dataIndex={'isNewArrival'}
-					title={'New Arrival'}
-					render={(isNewArrival: BaseRecord) => (
-						<BooleanField
-							value={isNewArrival}
-							trueIcon={<CheckCircleOutlined className='text-2xl' />}
-							falseIcon={<CloseCircleOutlined className='text-2xl' />}
-						/>
-					)}
-				/>
+				<Table.Column dataIndex='_id' title={'Id'} />
+				<Table.Column dataIndex={'image'} title={'Image'} />
+
 				<Table.Column
 					title={'Actions'}
 					dataIndex='actions'
@@ -31,7 +21,7 @@ export const CategoryList = () => {
 						<Space>
 							<EditButton hideText size='small' recordItemId={record.id} />
 							<ShowButton hideText size='small' recordItemId={record.id} />
-							<DeleteButton id={record.id ?? ''} />
+							<DeleteButton hideText size='small' recordItemId={record.id} />
 						</Space>
 					)}
 				/>

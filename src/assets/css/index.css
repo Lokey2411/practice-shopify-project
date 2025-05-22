@@ -11,3 +11,21 @@
 * {
 	transition: all 0.2s ease-in-out;
 }
+
+.ant-upload-wrapper > .ant-upload {
+	width: 100%;
+}
+
+.ant-upload > .ant-upload {
+	width: 100%;
+	padding: 12px;
+	height: auto !important;
+	display: block !important;
+	border: 1px dashed #fff;
+	border-radius: 8px;
+}
+
+.ant-picker-dropdown {
+	top: 390px !important;
+	left: 248px !important;
+}

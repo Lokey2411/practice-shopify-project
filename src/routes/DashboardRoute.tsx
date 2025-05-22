@@ -6,6 +6,7 @@ import { UserCreate, UserEdit, UserList, UserShow } from '../pages/users'
 import { ErrorComponent } from '@refinedev/core'
 import { Header } from '@/components'
 import { ProductCreate, ProductEdit, ProductList, ProductShow } from '@/pages/products'
+import { SliderList, SliderCreate, SliderEdit, SliderShow } from '@/pages/sliders'
 
 const DashboardRoute = () => {
 	return (
@@ -34,6 +35,12 @@ const DashboardRoute = () => {
 					<Route path='create' element={<UserCreate />} />
 					<Route path='edit/:id' element={<UserEdit />} />
 					<Route path='show/:id' element={<UserShow />} />
+				</Route>
+				<Route path='/sliders'>
+					<Route index element={<SliderList />} />
+					<Route path='create' element={<SliderCreate />} />
+					<Route path='edit/:id' element={<SliderEdit />} />
+					<Route path='show/:id' element={<SliderShow />} />
 				</Route>
 				<Route path='*' element={<ErrorComponent />} />
 			</Route>

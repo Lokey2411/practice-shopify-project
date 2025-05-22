@@ -1,4 +1,4 @@
-const reosourcesName = ['categories', 'products', 'users']
+const reosourcesName = ['categories', 'products', 'users', 'sliders']
 
 export const resources = reosourcesName.map(name => ({
 	name,
