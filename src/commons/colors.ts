@@ -12,3 +12,4 @@ export const colors = {
     "button-hover-2-bg": "#A0BCE0",
     "text-2":"#000000"
 }
+

@@ -1,7 +1,7 @@
 import login from '@/assets/images/login.jpg'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import Http from '@/services/Api'
-import { ButtonProps, Image } from 'antd'
+import { Button, ButtonProps, Image, Input } from 'antd'
 import useNotification from 'antd/es/notification/useNotification'
 import { useState } from 'react'
 const Login = () => {
@@ -47,8 +47,8 @@ const Login = () => {
 					<div className='flex flex-1 flex-col gap-6 w-96'>
 						<h1 className='text-3xl font-medium'>Create an account</h1>
 						<p>Enter your details below</p>
-						<form className='flex flex-col'>
-							<input
+						<form className='flex flex-col gap-4 '>
+							<Input
 								placeholder='Your Email or Phone Number'
 								className='border-b w-full py-2 my-4'
 								value={formState.username || formState.email}
@@ -56,7 +56,7 @@ const Login = () => {
 									setFormState({ ...formState, email: e.target.value, username: e.target.value })
 								}}
 							/>
-							<input
+							<Input
 								type='password'
 								placeholder='Password'
 								className='border-b w-full py-2 my-4'
@@ -65,11 +65,11 @@ const Login = () => {
 							/>
 
 							<div className='flex justify-between gap-4 mt-6'>
-								<button
+								<Button
 									onClick={handleLogin}
 									className='bg-button-2-bg text-white w-36 px-6 py-3 rounded cursor-pointer hover:bg-button-hover-1-bg transition text-sm font-medium'>
 									Login
-								</button>
+								</Button>
 								<p className='text-button-2-bg cursor-pointer'>Foget Password?</p>
 							</div>
 						</form>

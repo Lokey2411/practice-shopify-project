@@ -5,6 +5,8 @@ import { FaUserCircle } from 'react-icons/fa';
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
 import useNotification from 'antd/es/notification/useNotification';
+import { useFetch } from '@/hooks/useFetch'
+import { IProduct } from '@/types/IProduct'
 
 const navigationLabels = [
 	{
@@ -36,6 +38,8 @@ export default function Header() {
 	const navigate = useNavigate();
 	const [notification, contextHolder] = useNotification();
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [searchValue, setSearchValue] = useState('');
+	const { data: products } = useFetch<IProduct[]>(`/products?name=${encodeURIComponent(searchValue)}`);
 
 	useEffect(() => {
 		const token = localStorage.getItem('token');
@@ -75,6 +79,9 @@ export default function Header() {
 		}),
 	}));
 
+	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchValue(e.target.value);
+	};
 	const userMenuItems: MenuProps['items'] = [
 		...(isLoggedIn
 			? [
@@ -130,14 +137,50 @@ export default function Header() {
 					<Menu items={navigationItems} mode="horizontal" color="rgba(0,0,0,0.5)" className="!border-b-0" />
 				</div>
 				<Flex gap={24} align="center" className="!py-1">
-					<Input
-						suffix={<SearchOutlined />}
-						placeholder="What are you looking for?"
-						classNames={{
-							input: 'text-md',
-						}}
-						className="!bg-secondary-bg"
-					/>
+					<div style={{ position: 'relative', width: '100%' }}>
+						<Input
+							suffix={<SearchOutlined />}
+							placeholder="What are you looking for?"
+							classNames={{
+								input: 'text-md',
+							}}
+							className="!bg-secondary-bg"
+							value={searchValue}
+							onChange={handleSearchChange}
+							onBlur={() => setSearchValue('')}
+						/>
+						{products && products.length > 0 && searchValue && (
+							<div
+								style={{
+									position: 'absolute',
+									top: '100%',
+									left: 0,
+									right: 0,
+									background: 'white',
+									border: '1px solid #eee',
+									zIndex: 100,
+									maxHeight: 300,
+									overflowY: 'auto',
+									boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+								}}
+							>
+								{products.map((product: IProduct) => (
+									<Link
+										key={product._id}
+										to={`/detail/${product._id}`}
+										style={{
+											display: 'block',
+											padding: '8px 16px',
+											color: '#333',
+											textDecoration: 'none',
+										}}
+									>
+										{product.name}
+									</Link>
+								))}
+							</div>
+						)}
+					</div>
 					<Flex gap={16} align="center">
 						<Link to="/wishlist" className="">
 							<HeartOutlined className={iconClassName} />

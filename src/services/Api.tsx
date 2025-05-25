@@ -1,6 +1,16 @@
+import { getToken } from "@/commons/gettoken";
 import axios from "axios";
-const Http = axios.create({
-  baseURL: "/services/api",
-  withCredentials: true,
-});
-export default Http; 
+
+export const httpClient = () => {
+  const token = getToken()
+  return axios.create({
+    baseURL: '/services/api',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    }
+  });
+}
+
+export default httpClient();
+

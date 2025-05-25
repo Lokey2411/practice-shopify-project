@@ -80,7 +80,7 @@ const CountdownHero: React.FC = () => {
 				{/* Image */}
 				<div className='flex-1 flex justify-center'>
 					<Image
-						src='https://images.unsplash.com/photo-1616410011236-7a42121dd981?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+						src='https://th.bing.com/th/id/OIP.sdt5DjmiVwYEJuawToerZgHaHa?rs=1&pid=ImgDetMain'
 						alt='JBL Speaker'
 						width={500}
 						height={500}
