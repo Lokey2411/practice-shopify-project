@@ -21,12 +21,18 @@ export const addToCart = async (req: Request, res: Response) => {
 	const { userId } = (req as any).user
 	const { products, price, address } = req.body
 
-	if (!products || !price || !address) {
+	if (!products || !price || address === undefined || address === null) {
 		return res.status(STATUS.BAD_REQUEST).json('Sản phẩm, giá và địa chỉ là bắt buộc')
 	}
 
 	try {
-		const order = new Order({ userId, products, price, address, status: CART_STATUS })
+		const order = new Order({
+			userId,
+			products,
+			price: +price.match(/\d+(?:\.\d+)?/g)[0],
+			address,
+			status: CART_STATUS,
+		})
 		await order.save()
 		return res.json('Thêm vào giỏ hàng thành công')
 	} catch (error) {

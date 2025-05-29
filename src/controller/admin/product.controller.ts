@@ -21,6 +21,7 @@ interface ProductParams {
  */
 export const addProduct = async (req: Request, res: Response) => {
 	const { name, price } = req.body
+	console.log(req.body)
 
 	if (!name || !price) {
 		return res.status(STATUS.BAD_REQUEST).json('Tên và giá sản phẩm là bắt buộc')

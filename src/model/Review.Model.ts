@@ -5,7 +5,6 @@ export interface IReview extends Document {
 	userId: mongoose.Types.ObjectId
 	rating: number
 	comment: string
-	images: string[]
 	isDeleted: boolean
 }
 
@@ -15,7 +14,6 @@ const ReviewSchema: Schema = new Schema(
 		userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 		rating: { type: Number, required: true, min: 1, max: 5 },
 		comment: { type: String },
-		images: [{ type: String }],
 		isDeleted: { type: Boolean, default: false },
 	},
 	{ timestamps: true },

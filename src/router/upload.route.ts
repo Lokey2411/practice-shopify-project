@@ -13,7 +13,9 @@ app.get(
 			const decodedFileName = decodeURIComponent(req.params.filename)
 			console.log('Requested filename:', decodedFileName)
 			console.log('MongoDB connection state:', mongoose.connection.readyState)
-
+			if (mongoose.connection.readyState !== 1) {
+				throw new Error('MongoDB not connected')
+			}
 			const gfs = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
 				bucketName: 'uploads',
 			})
@@ -25,8 +27,10 @@ app.get(
 				console.log('File not found:', decodedFileName)
 				return res.status(404).json({ message: 'File not found' })
 			}
-
-			if (!files[0].contentType.startsWith('image/')) {
+			if (!files[0].contentType) {
+				return res.status(400).json({ message: 'File metadata is missing contentType' })
+			}
+			if (!files[0]?.contentType.startsWith('image/')) {
 				console.log('Not an image:', files[0].contentType)
 				return res.status(400).json({ message: 'Not an image' })
 			}

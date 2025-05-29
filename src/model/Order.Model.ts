@@ -26,7 +26,7 @@ const OrderSchema: Schema = new Schema(
 			enum: ['Pending', 'Processing', 'Completed', 'Cancelled'],
 			default: 'Pending',
 		},
-		address: { type: String, required: true, trim: true },
+		address: { type: String, trim: true },
 		isDeleted: { type: Boolean, default: false },
 	},
 	{ timestamps: true },

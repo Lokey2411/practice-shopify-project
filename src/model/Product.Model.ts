@@ -5,10 +5,12 @@ export interface IProduct extends Document {
 	categories: mongoose.Types.ObjectId[]
 	images: string[]
 	price: string
-	sizes: string[]
-	colors: string[]
 	description: string
 	isDeleted: boolean
+	author: string
+	publisher: string
+	publishedDate: string
+	numPage: number
 }
 
 const ProductSchema: Schema = new Schema(
@@ -17,8 +19,10 @@ const ProductSchema: Schema = new Schema(
 		categories: [{ type: Schema.Types.ObjectId, ref: 'Category', required: true }],
 		images: [{ type: String, required: true }],
 		price: { type: String, required: true },
-		sizes: [{ type: String }],
-		colors: [{ type: String }],
+		author: { type: String, required: true },
+		publisher: { type: String, required: true },
+		publishedDate: { type: String, required: true },
+		numPage: { type: Number, required: true },
 		description: { type: String },
 		isDeleted: { type: Boolean, default: false },
 	},
