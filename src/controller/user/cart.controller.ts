@@ -26,7 +26,14 @@ export const addToCart = async (req: Request, res: Response) => {
 	}
 
 	try {
-		const order = new Order({
+		let order = await Order.findOne({ userId, status: CART_STATUS, isDeleted: false })
+		if (order) {
+			order.products.push(...products)
+			order.price += +price.match(/\d+(?:\.\d+)?/g)[0]
+			await order.save()
+			return res.json('Thêm vào giỏ hàng thành công')
+		}
+		order = new Order({
 			userId,
 			products,
 			price: +price.match(/\d+(?:\.\d+)?/g)[0],
@@ -49,14 +56,11 @@ export const addToCart = async (req: Request, res: Response) => {
  */
 export const updateCart = async (req: Request<CartParams>, res: Response) => {
 	const { userId } = (req as any).user
-	const { orderId } = req.params
 
 	try {
-		const order = await Order.findOneAndUpdate(
-			{ _id: orderId, userId, status: CART_STATUS, isDeleted: false },
-			req.body,
-			{ new: true },
-		)
+		const order = await Order.findOneAndUpdate({ userId, status: CART_STATUS, isDeleted: false }, req.body, {
+			new: true,
+		})
 		if (!order) {
 			return res.status(STATUS.NOT_FOUND).json('Không tìm thấy giỏ hàng')
 		}
@@ -72,17 +76,14 @@ export const updateCart = async (req: Request<CartParams>, res: Response) => {
  */
 export const removeFromCart = async (req: Request<CartParams>, res: Response) => {
 	const { userId } = (req as any).user
-	const { orderId } = req.params
 
 	try {
-		const order = await Order.findOneAndUpdate(
-			{ _id: orderId, userId, status: CART_STATUS, isDeleted: false },
-			{ isDeleted: true },
-			{ new: true },
-		)
+		const order = await Order.findOne({ userId, status: CART_STATUS, isDeleted: false })
 		if (!order) {
 			return res.status(STATUS.NOT_FOUND).json('Không tìm thấy giỏ hàng')
 		}
+		order.products = order.products.filter(product => product.productId !== req.body.productId)
+		await order.save()
 		return res.json('Xóa sản phẩm khỏi giỏ hàng thành công')
 	} catch (error) {
 		return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi xóa khỏi giỏ hàng: ${(error as Error).message}`)

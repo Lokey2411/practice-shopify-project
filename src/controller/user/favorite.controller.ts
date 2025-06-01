@@ -94,7 +94,6 @@ export const getFavorites = async (req: Request, res: Response) => {
 		const filterQuery: FavoriteDocument = {
 			_id: req.query.orderId as any,
 			products: req.query.products as any,
-			price: req.query.price as any,
 		}
 		const { sortBy, sortOrder } = req.query
 		const filter = applyFilter<FavoriteDocument>(filterQuery, ['products'])

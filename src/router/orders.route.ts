@@ -8,6 +8,6 @@ const app = Router()
 app.get('/', authMiddleware, asyncHandler(getAllOrders))
 app.get('/:id', authMiddleware, asyncHandler(getOrderById))
 app.put('/:id', authMiddleware, asyncHandler(updateOrderStatus))
-app.patch('/:orderId', authMiddleware, asyncHandler(purchaseProducts))
+app.patch('/:orderId/purchase', authMiddleware, asyncHandler(purchaseProducts))
 
 export default app
