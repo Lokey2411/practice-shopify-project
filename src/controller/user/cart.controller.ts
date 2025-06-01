@@ -82,7 +82,7 @@ export const removeFromCart = async (req: Request<CartParams>, res: Response) =>
 		if (!order) {
 			return res.status(STATUS.NOT_FOUND).json('Không tìm thấy giỏ hàng')
 		}
-		order.products = order.products.filter(product => product.productId !== req.body.productId)
+		order.products = order.products.filter(product => product.productId.toString() !== req.body.productId)
 		await order.save()
 		return res.json('Xóa sản phẩm khỏi giỏ hàng thành công')
 	} catch (error) {
