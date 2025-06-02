@@ -13,7 +13,7 @@ export default defineConfig({
 	server: {
 		proxy: {
 			'/services/api': {
-				target: 'https://be-kappa-sand.vercel.app',
+				target: 'http://localhost:8000',
 				changeOrigin: true,
 			},
 		},

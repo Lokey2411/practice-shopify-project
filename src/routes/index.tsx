@@ -11,6 +11,7 @@ import NotFound from '@/pages/NotFound'
 import Login from '@/pages/Login'
 import Home from '@/pages/Home'
 import DetailProduct from '@/pages/DetailProduct'
+import Profile from '@/pages/Profile'
 
 
 export default function AppRouter() {
@@ -31,8 +32,8 @@ export default function AppRouter() {
 					<Route path='/wishlist' element={<WishList />} />
 					<Route path='/signup' element={<Signup />} />
 					<Route path='/login' element={<Login />} />
-
-
+					<Route path='/WishLisst' element={<WishList />} />
+					<Route path='/profile' element={<PrivateRoute><Profile /></PrivateRoute>} />
 					<Route path='/cart' element={<PrivateRoute><Cart /></PrivateRoute>} />
 					<Route path='/detail/:id' element={<DetailProduct></DetailProduct>} />
 					<Route path='*' element={<NotFound />} />

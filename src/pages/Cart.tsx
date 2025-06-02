@@ -1,113 +1,103 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useFetch } from '@/hooks/useFetch';
+import { IOrder } from '@/types/IOrder';
+import Http from '@/services/Api';
+import { message } from 'antd';
+import CartItem from '@/components/CartItem';
 
 const Cart = () => {
-  // Sample cart items data
-  const cartItems = [
-    {
-      id: 1,
-      name: 'Premium Headphones',
-      price: 199.99,
-      quantity: 1,
-      image: 'https://via.placeholder.com/100',
-    },
-    {
-      id: 2,
-      name: 'Wireless Mouse',
-      price: 49.99,
-      quantity: 2,
-      image: 'https://via.placeholder.com/100',
-    },
-  ];
+  const [refresh, setRefresh] = useState(false);
+  const { data, loading } = useFetch<IOrder[]>('/carts', [refresh]);
+  const [quantities, setQuantities] = useState<{ [id: string]: number }>({});
 
-  // Calculate total
+  // Khi data thay đổi, đồng bộ lại số lượng
+  useEffect(() => {
+    if (Array.isArray(data)) {
+      const initialQuantities: { [id: string]: number } = {};
+      data.forEach(item => {
+        initialQuantities[item._id] = item.quantity || 1;
+      });
+      setQuantities(initialQuantities);
+    }
+  }, [data]);
+
+  if (loading) return <div className="text-center py-20 text-xl font-semibold">Đang tải...</div>;
+
+  const cartItems = Array.isArray(data) ? data : [];
+
+  // Tính tổng tiền dựa trên số lượng
   const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + item.price * (quantities[item._id] || 1),
     0
   );
   const tax = subtotal * 0.1;
   const total = subtotal + tax;
 
-  return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="container mx-auto px-4 max-w-5xl">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Shopping Cart</h1>
+  // Xử lý tăng/giảm số lượng
+  const handleQuantityChange = (id: string, delta: number) => {
+    setQuantities(prev => ({
+      ...prev,
+      [id]: Math.max(1, (prev[id] || 1) + delta)
+    }));
+  };
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
+  const handleRemove = async (productId: string) => {
+    try {
+      await Http.delete('/carts', { data: { productId } });
+      message.success('Xóa sản phẩm khỏi giỏ hàng thành công!');
+      setRefresh(r => !r); // refetch lại giỏ hàng
+      window.location.reload();
+    } catch (err) {
+      message.error('Xóa sản phẩm thất bại!');
+    }
+  };
+
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-pink-50 py-10">
+      <div className="max-w-6xl mx-auto px-4">
+        <h1 className="text-4xl font-extrabold text-pink-700 mb-10 text-center drop-shadow">Giỏ Sách/Truyện của bạn</h1>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2">
             {cartItems.length === 0 ? (
-              <div className="bg-white rounded-lg shadow-md p-6 text-center">
-                <p className="text-gray-600">Your cart is empty</p>
+              <div className="bg-white rounded-xl shadow-lg p-10 text-center">
+                <p className="text-gray-500 text-lg">Giỏ hàng của bạn đang trống.</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {cartItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4"
-                  >
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-24 h-24 object-cover rounded"
-                    />
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        {item.name}
-                      </h3>
-                      <p className="text-gray-600">${item.price.toFixed(2)}</p>
-                      <div className="flex items-center mt-2 space-x-4">
-                        <div className="flex items-center border rounded">
-                          <button className="px-3 py-1 text-gray-600 hover:bg-gray-100">
-                            -
-                          </button>
-                          <span className="px-4 py-1">{item.quantity}</span>
-                          <button className="px-3 py-1 text-gray-600 hover:bg-gray-100">
-                            +
-                          </button>
-                        </div>
-                        <button className="text-red-500 hover:text-red-700">
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                    <p className="text-lg font-semibold text-gray-800">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </p>
-                  </div>
+                  <CartItem
+                    key={item._id}
+                    {...item}
+                    quantity={quantities[item._id] || 1}
+                    onQuantityChange={(delta) => handleQuantityChange(item._id, delta)}
+                    handleRemove={handleRemove}
+                  />
                 ))}
               </div>
             )}
           </div>
-
-          {/* Order Summary */}
-          <div className="bg-white rounded-lg shadow-md p-6 h-fit">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Order Summary
-            </h2>
-            <div className="space-y-4">
+          <div className="bg-white rounded-xl shadow-lg p-8 h-fit sticky top-10">
+            <h2 className="text-2xl font-bold text-blue-700 mb-6 text-center">Tóm tắt đơn hàng</h2>
+            <div className="space-y-4 text-lg">
               <div className="flex justify-between">
-                <span className="text-gray-600">Subtotal</span>
-                <span className="text-gray-800">${subtotal.toFixed(2)}</span>
+                <span className="text-gray-600">Tạm tính</span>
+                <span className="text-gray-800 font-semibold">{subtotal.toLocaleString()}₫</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Tax (10%)</span>
-                <span className="text-gray-800">${tax.toFixed(2)}</span>
+                <span className="text-gray-600">Thuế (10%)</span>
+                <span className="text-gray-800 font-semibold">{tax.toLocaleString()}₫</span>
               </div>
               <div className="border-t pt-4">
                 <div className="flex justify-between">
-                  <span className="text-lg font-semibold text-gray-800">
-                    Total
-                  </span>
-                  <span className="text-lg font-semibold text-gray-800">
-                    ${total.toFixed(2)}
-                  </span>
+                  <span className="text-xl font-bold text-blue-700">Tổng cộng</span>
+                  <span className="text-xl font-bold text-pink-700">{total.toLocaleString()}₫</span>
                 </div>
               </div>
-              <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300">
-                Proceed to Checkout
-              </button>
             </div>
+            <button className="w-full mt-8 bg-pink-600 text-white py-3 rounded-xl text-lg font-bold hover:bg-pink-700 transition duration-300 shadow">
+              Thanh toán ngay
+            </button>
           </div>
         </div>
       </div>
