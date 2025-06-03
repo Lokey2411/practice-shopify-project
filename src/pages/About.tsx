@@ -1,4 +1,4 @@
-import Breadcrumbs from '@/components/Breadcrumbs'; // Sử dụng Image từ Next.js để tối ưu hình ảnh (nếu bạn dùng Next.js)
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { Image } from 'antd';
 const About = () => {
   return (
@@ -12,14 +12,16 @@ const About = () => {
         <div className="md:w-1/2 mb-6 md:mb-0">
           <h1 className="text-4xl font-bold mb-4">OUR STORY</h1>
           <p className="text-gray-600 leading-relaxed">
-            Founded in 2005, we started with an active presence on Bangladeshi soil. Supported by a wide range of talented and creative individuals, we have been able to reach out to customers in the region. We offer more than 1M+ products and services solutions. Our products have been sold to more than 150 countries worldwide. We are exclusive and offer a diverse assortment in categories.
+            Founded in 2005, we started with an active presence on Bangladeshi soil. Supported by a wide range of talented and
+            creative individuals, we have been able to reach out to customers in the region.
+            We offer more than 1M+ products and services solutions. Our products have been sold to more than 150 countries worldwide.
+            We are exclusive and offer a diverse assortment in categories.
           </p>
         </div>
         {/* Image */}
         <div className="md:w-1/2">
           <Image
-            src="https://th.bing.com/th/id/R.e75fc4cbe3cc2d6662fd3a9dc0a82419?rik=HRKN%2f1J5MdiY5w&riu=http%3a%2f%2fwww.yaguara.co%2fwp-content%2fuploads%2f2022%2f10%2fHow-To-Start-A-Bookstore-Online-Yaguara.png&ehk=v3Euq%2bvCJW063fjSHP6CnZfYlaByayOZujBCAmjgxDs%3d&risl=&pid=ImgRaw&r=0" // Thay bằng đường dẫn hình ảnh của bạn
-            alt="Two people shopping"
+            src="https://th.bing.com/th/id/R.e75fc4cbe3cc2d6662fd3a9dc0a82419?rik=HRKN%2f1J5MdiY5w&riu=http%3a%2f%2fwww.yaguara.co%2fwp-content%2fuploads%2f2022%2f10%2fHow-To-Start-A-Bookstore-Online-Yaguara.png&ehk=v3Euq%2bvCJW063fjSHP6CnZfYlaByayOZujBCAmjgxDs%3d&risl=&pid=ImgRaw&r=0" alt="Two people shopping"
             className="w-full h-auto rounded-lg"
           />
         </div>
@@ -50,7 +52,7 @@ const About = () => {
         {/* Team Member 1 */}
         <div>
           <Image
-            src="https://tse1.mm.bing.net/th/id/OIP.a_C9v1H7RBbVyFjU4udThgHaKX?cb=iwc2&rs=1&pid=ImgDetMain" // Thay bằng đường dẫn hình ảnh
+            src="https://tse1.mm.bing.net/th/id/OIP.a_C9v1H7RBbVyFjU4udThgHaKX?cb=iwc2&rs=1&pid=ImgDetMain"
             alt="Tom Cruise"
             className="w-32 h-32 mx-auto rounded-full mb-4"
           />
@@ -64,7 +66,7 @@ const About = () => {
         {/* Team Member 2 */}
         <div>
           <Image
-            src="https://tse1.mm.bing.net/th/id/OIP.4vQhkx6x96D1AHAcIp3R8QAAAA?cb=iwc2&w=250&h=307&rs=1&pid=ImgDetMain" // Thay bằng đường dẫn hình ảnh
+            src="https://tse1.mm.bing.net/th/id/OIP.4vQhkx6x96D1AHAcIp3R8QAAAA?cb=iwc2&w=250&h=307&rs=1&pid=ImgDetMain"
             alt="Emma Watson"
             className="w-32 h-32 mx-auto rounded-full mb-4"
           />
@@ -77,7 +79,7 @@ const About = () => {
         {/* Team Member 3 */}
         <div>
           <Image
-            src="https://tse1.mm.bing.net/th/id/OIP.QjynegEfQVPq5kIEuX9fWQHaFj?cb=iwc2&rs=1&pid=ImgDetMain" // Thay bằng đường dẫn hình ảnh
+            src="https://tse1.mm.bing.net/th/id/OIP.QjynegEfQVPq5kIEuX9fWQHaFj?cb=iwc2&rs=1&pid=ImgDetMain"
             alt="Will Smith"
             className="w-32 h-32 mx-auto rounded-full mb-4"
           />

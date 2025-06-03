@@ -103,52 +103,51 @@ export default function Header() {
 				</div>
 
 				{isLoggedIn && (
-					<div className="relative" ref={dropdownRef}>
-						<Select
-							placeholder="Search books..."
-							showSearch
-							onChange={onChange}
-							optionFilterProp="label"
-							className="w-64"
-							options={
-								products ? products.map(item => ({
-									label: item.name,
-									value: item._id
-								})) : []
-							}
-						/>
+					<>
+						<div className="relative" ref={dropdownRef}>
+							<Select
+								placeholder="Search books..."
+								showSearch
+								onChange={onChange}
+								optionFilterProp="label"
+								className="w-64"
+								options={
+									products
+										? products.map(item => ({
+											label: item.name,
+											value: item._id,
+										}))
+										: []
+								}
+							/>
+						</div>
 
-					</div>
-				)}
-
-
-				{isLoggedIn && (
-					<div className="flex gap-4 items-center">
-						<Link to="/WishList">
-							<HeartOutlined className={iconClassName} />
-						</Link>
-
-						<Link to="/cart">
-							<ShoppingCartOutlined className={iconClassName} />
-						</Link>
-						<Dropdown
-							overlay={
-								<Menu>
-									<Menu.Item key="profile">
-										<Link to="/profile">Profile</Link>
-									</Menu.Item>
-									<Menu.Item key="logout" onClick={logout}>
-										Logout
-									</Menu.Item>
-								</Menu>
-							}
-						>
-							<div className="cursor-pointer flex items-center gap-1">
-								<UserOutlined className={iconClassName} />
-								<DownOutlined className="text-sm" />
-							</div>
-						</Dropdown>
-					</div>
+						<div className="flex gap-4 items-center">
+							<Link to="/WishList">
+								<HeartOutlined className={iconClassName} />
+							</Link>
+							<Link to="/cart">
+								<ShoppingCartOutlined className={iconClassName} />
+							</Link>
+							<Dropdown
+								overlay={
+									<Menu>
+										<Menu.Item key="profile">
+											<Link to="/profile">Profile</Link>
+										</Menu.Item>
+										<Menu.Item key="logout" onClick={logout}>
+											Logout
+										</Menu.Item>
+									</Menu>
+								}
+							>
+								<div className="cursor-pointer flex items-center gap-1">
+									<UserOutlined className={iconClassName} />
+									<DownOutlined className="text-sm" />
+								</div>
+							</Dropdown>
+						</div>
+					</>
 				)}
 
 

@@ -1,9 +1,14 @@
 import { Row, Col, Card, Typography, Space } from 'antd'
 import { CarOutlined, CustomerServiceOutlined, SafetyCertificateOutlined } from '@ant-design/icons'
 
-const { Title, Text } = Typography
 
-const FeatureCard = ({ icon, title, description }) => (
+type FeatureCardProps = {
+	icon: React.ReactNode
+	title: string
+	description: string
+}
+
+const FeatureCard = ({ icon, title, description }: FeatureCardProps) => (
 	<Card
 		style={{
 			textAlign: 'center',

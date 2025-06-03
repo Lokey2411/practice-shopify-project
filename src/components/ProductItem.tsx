@@ -30,9 +30,9 @@ const ProductItem: React.FC<IProduct> = ({
 				description: `Thêm ${name} vào giỏ hàng của bạn.`,
 			});
 
-			// Gọi API thêm vào giỏ, nếu đã có thì tăng số lượng
+
 			const res = await Http.post('/carts', {
-				products: [{ productId: _id, quantity: 1 }], // quantity: 1 mỗi lần nhấn
+				products: [{ productId: _id, quantity: 1 }],
 				price,
 				address: ''
 			});

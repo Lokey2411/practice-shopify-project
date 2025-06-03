@@ -7,15 +7,18 @@ import CartItem from '@/components/CartItem';
 
 const Cart = () => {
   const [refresh, setRefresh] = useState(false);
-  const { data, loading } = useFetch<IOrder[]>('/carts', [refresh]);
+  const { data, loading } = useFetch<IOrder[]>('/carts');
   const [quantities, setQuantities] = useState<{ [id: string]: number }>({});
 
-  // Khi data thay đổi, đồng bộ lại số lượng
+
   useEffect(() => {
     if (Array.isArray(data)) {
       const initialQuantities: { [id: string]: number } = {};
       data.forEach(item => {
-        initialQuantities[item._id] = item.quantity || 1;
+        // Lấy quantity thực tế từ item.products[0].quantity (nếu cấu trúc như vậy)
+        if (item.products && item.products[0]) {
+          initialQuantities[item._id] = item.products[0].quantity;
+        }
       });
       setQuantities(initialQuantities);
     }

@@ -4,6 +4,7 @@ import { IProduct } from "@/types/IProduct";
 import { useState } from "react";
 import { Rate, Skeleton, Button, notification } from "antd";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+import Http from "@/services/Api"; // Đảm bảo đã import Http
 
 const DetailProduct = () => {
     const { id } = useParams();
@@ -15,16 +16,40 @@ const DetailProduct = () => {
     if (!product) return <Skeleton active />;
     const visibleThumbnails = product.images.slice(0, 4);
 
-    const handleAddToCart = () => {
-        api.success({
-            message: "Thêm vào giỏ hàng thành công",
-            description: `Sản phẩm "${product.name}" đã được thêm vào giỏ hàng.`,
-        });
-        api.error({
-            message: "Thông báo",
-            description: `Sản phẩm "${product.name}" đã có trong giỏ hàng.`,
-        })
-    }
+    // Hàm thêm vào giỏ hàng
+    const addToCart = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        try {
+            const key = "add-to-cart";
+            api.open({
+                key,
+                message: 'Thêm vào giỏ hàng...',
+                description: `Thêm ${product.name} vào giỏ hàng của bạn.`,
+            });
+
+            const res = await Http.post('/carts', {
+                products: [{ productId: product._id, quantity: 1 }],
+                price: product.price,
+                address: ''
+            });
+
+            if (res.status !== 200) {
+                throw new Error('Lỗi khi thêm vào giỏ hàng');
+            }
+
+            api.open({
+                key,
+                message: 'Thêm giỏ hàng',
+                description: `${product.name} đã thêm vào giỏ hàng.`,
+            });
+        } catch (error) {
+            api.error({
+                message: 'Failed to add',
+                description: 'There was an issue adding the product.',
+            });
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 py-10 px-4">
             {contextHolder}
@@ -40,7 +65,6 @@ const DetailProduct = () => {
                                 className="max-h-full max-w-full object-contain transition-all duration-500"
                             />
                         </div>
-
                         {/* Thumbnails */}
                         <div className="flex gap-4 justify-center">
                             {visibleThumbnails.map((img, index) => (
@@ -61,7 +85,6 @@ const DetailProduct = () => {
                             ))}
                         </div>
                     </div>
-
                     {/* Thông tin sản phẩm */}
                     <div className="w-full md:w-1/2 flex flex-col gap-6">
                         <div>
@@ -69,10 +92,8 @@ const DetailProduct = () => {
                             <p className="text-xl text-red-500 font-bold mt-2">
                                 {product.price.toLocaleString()}₫
                             </p>
-                            <Rate allowHalf defaultValue={2.5} />;
-
+                            <Rate allowHalf defaultValue={2.5} />
                         </div>
-
                         <div className="text-gray-700 space-y-1 text-sm">
                             <p>
                                 <span className="font-medium">Tác giả:</span> {product.author}
@@ -87,18 +108,16 @@ const DetailProduct = () => {
                                 <span className="font-medium">Số trang:</span> {product.numPage}
                             </p>
                         </div>
-
                         {/* Nút thao tác */}
                         <div className="flex items-center gap-4 mt-4">
                             <Button
                                 type="primary"
                                 size="large"
                                 className="rounded-xl bg-blue-600 hover:bg-blue-700 transition-transform duration-300 hover:scale-105"
-                                onClick={handleAddToCart}
+                                onClick={addToCart}
                             >
                                 Thêm vào giỏ hàng
                             </Button>
-
                             <Button
                                 shape="circle"
                                 icon={
@@ -116,4 +135,5 @@ const DetailProduct = () => {
         </div>
     );
 };
+
 export default DetailProduct;
