@@ -1,13 +1,12 @@
 import { Dropdown, Flex, Input, Menu, MenuProps, Select } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DownOutlined, HeartOutlined, SearchOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import { FaUserCircle } from 'react-icons/fa';
+import { UserOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 import { useState, useEffect, useRef } from 'react';
 import useNotification from 'antd/es/notification/useNotification';
 import { useFetch } from '@/hooks/useFetch';
 import { IProduct } from '@/types/IProduct';
-import path from 'path';
 const navigationLabels = [
 	{ isLogin: true, path: '/', display: 'Home' },
 	{ isLogin: true, path: '/contact', display: 'Contact' },
@@ -145,7 +144,7 @@ export default function Header() {
 							}
 						>
 							<div className="cursor-pointer flex items-center gap-1">
-								<FaUserCircle className={iconClassName} />
+								<UserOutlined className={iconClassName} />
 								<DownOutlined className="text-sm" />
 							</div>
 						</Dropdown>

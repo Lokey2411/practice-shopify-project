@@ -26,17 +26,17 @@ const ProductItem = ({
     onQuantityChange: (delta: number) => void
 }) => {
     const { data: product, loading } = useFetch<IProduct>(`/products/${productId}`)
-    if (loading || !product) return <Skeleton active />
+    if (loading ?? !product) return <Skeleton active />
     return (
         <>
             <img
-                src={product.images[0] || '/no-image.png'}
-                alt={product.name || 'No name'}
+                src={product.images[0] ?? '/no-image.png'}
+                alt={product.name ?? 'No name'}
                 className="w-24 h-24 object-cover rounded"
             />
             <div className="flex-1">
                 <h3 className="text-lg font-semibold text-gray-800">
-                    {product.name || 'No name'}
+                    {product.name ?? 'No name'}
                 </h3>
                 <p className="text-gray-600">{product.price}</p>
                 <div className="flex items-center mt-2 space-x-4">

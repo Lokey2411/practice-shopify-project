@@ -36,13 +36,13 @@ const CategoriesSection: React.FC<Props> = ({ categories, selectedCategory, onSe
 					<button
 						key={cat.name}
 						onClick={() => onSelect(cat.name)}
-						className={`min-w-[120px] flex flex-col items-center justify-center border rounded-md px-4 py-6 text-sm transition-all
-              ${selectedCategory === cat.name
+						className={`w-32 flex flex-col items-center justify-center border rounded-md px-4 py-6 text-sm transition-all
+			  ${selectedCategory === cat.name
 								? 'bg-red-500 text-white border-red-500'
 								: 'bg-white text-black border-gray-300 hover:border-red-400'
 							}
-            `}>
-						<div className='text-2xl mb-2'>{cat.icon}</div>
+			`}>
+
 						<div>{cat.name}</div>
 					</button>
 				))}
