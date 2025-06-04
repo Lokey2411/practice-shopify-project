@@ -12,15 +12,15 @@ const Cart = () => {
 
 
   useEffect(() => {
+
     if (Array.isArray(data)) {
-      const initialQuantities: { [id: string]: number } = {};
-      data.forEach(item => {
-        // Lấy quantity thực tế từ item.products[0].quantity (nếu cấu trúc như vậy)
-        if (item.products && item.products[0]) {
-          initialQuantities[item._id] = item.products[0].quantity;
-        }
-      });
-      setQuantities(initialQuantities);
+
+      const allProducts = data.flatMap(order => order.products);
+      const productQuantities = allProducts.reduce((obj, prd) => {
+        obj[prd.productId] = prd.quantity;
+        return obj;
+      }, {} as { [id: string]: number });
+      setQuantities(productQuantities);
     }
   }, [data]);
 
@@ -67,6 +67,7 @@ const Cart = () => {
                 <p className="text-gray-500 text-lg">Giỏ hàng của bạn đang trống.</p>
               </div>
             ) : (
+              //ở đây t muốn hiển thị danh sách sao cho mỗi sản phẩm riêng 1 hàng mà ko có được 
               <div className="space-y-6">
                 {cartItems.map((item) => (
                   <CartItem
