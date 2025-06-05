@@ -42,8 +42,6 @@ const CountdownHero: React.FC = () => {
 		}, 1000)
 		return () => clearInterval(timer)
 	}, [])
-
-	// 👉 Component từng vòng tròn
 	const TimeCircle = (value: number, label: string) => (
 		<div className='flex flex-col items-center justify-center w-20 h-20 bg-white text-black rounded-full shadow-md'>
 			<span className='font-bold text-lg'>{String(value).padStart(2, '0')}</span>
@@ -63,7 +61,7 @@ const CountdownHero: React.FC = () => {
 						Music Experience
 					</h1>
 
-					{/* ✅ Custom Countdown */}
+					
 					<div className='flex gap-4 my-6'>
 						{TimeCircle(timeLeft.hours, 'Hours')}
 						{TimeCircle(timeLeft.days, 'Days')}

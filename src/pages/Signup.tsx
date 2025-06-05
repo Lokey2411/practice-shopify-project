@@ -9,7 +9,7 @@ import Http from '@/services/Api';
 
 const Signup = () => {
 	const [formState, setFormState] = useState({
-		username: '', // Đổi từ name thành username
+		username: '', 
 		email: '',
 		password: '',
 	});
@@ -66,7 +66,7 @@ const Signup = () => {
 						<p>Enter your details below</p>
 						<form onSubmit={handleSignUp} className='flex flex-col gap-y-6'>
 							<Input
-								name='username' // Đổi từ name thành username
+								name='username' 
 								value={formState.username}
 								onChange={handleChange}
 								placeholder='Your Username *'

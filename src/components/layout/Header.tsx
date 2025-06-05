@@ -46,7 +46,7 @@ export default function Header() {
 	const handleSearch = (value: string) => {
 		navigate(`/products?name=${encodeURIComponent(value)}`);
 		//setSearchValue();
-		setShowDropdown(false); // Ẩn dropdown khi tìm kiếm
+		setShowDropdown(false); 
 	};
 
 	const onChange = (value: string) => {

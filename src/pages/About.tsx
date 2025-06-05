@@ -48,8 +48,8 @@ const About = () => {
       </section>
 
       {/* Team Section */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center my-12">
-        {/* Team Member 1 */}
+      <section className="grid grid-cols-3 md:grid-cols-3 gap-6 text-center my-12">
+
         <div>
           <Image
             src="https://tse1.mm.bing.net/th/id/OIP.a_C9v1H7RBbVyFjU4udThgHaKX?cb=iwc2&rs=1&pid=ImgDetMain"
@@ -60,10 +60,10 @@ const About = () => {
           <p className="text-gray-500">Founder & Chairman</p>
           <div className="flex justify-center gap-2 mt-2">
             <a href="#"><Image src="/linkedin-icon.png" alt="LinkedIn" className="w-6 h-6" /></a>
-            {/* Thêm các biểu tượng mạng xã hội khác nếu cần */}
+
           </div>
         </div>
-        {/* Team Member 2 */}
+
         <div>
           <Image
             src="https://tse1.mm.bing.net/th/id/OIP.4vQhkx6x96D1AHAcIp3R8QAAAA?cb=iwc2&w=250&h=307&rs=1&pid=ImgDetMain"

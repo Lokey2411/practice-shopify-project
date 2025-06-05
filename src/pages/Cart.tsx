@@ -66,8 +66,7 @@ const Cart = () => {
               <div className="bg-white rounded-xl shadow-lg p-10 text-center">
                 <p className="text-gray-500 text-lg">Giỏ hàng của bạn đang trống.</p>
               </div>
-            ) : (
-              //ở đây t muốn hiển thị danh sách sao cho mỗi sản phẩm riêng 1 hàng mà ko có được 
+            ) : ( 
               <div className="space-y-6">
                 {cartItems.map((item) => (
                   <CartItem

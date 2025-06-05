@@ -4,7 +4,7 @@ import { IProduct } from "@/types/IProduct";
 import { useState } from "react";
 import { Rate, Skeleton, Button, notification } from "antd";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
-import Http from "@/services/Api"; // Đảm bảo đã import Http
+import Http from "@/services/Api"; 
 
 const DetailProduct = () => {
     const { id } = useParams();
