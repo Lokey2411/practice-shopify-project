@@ -1,44 +1,29 @@
-import { useFetch } from '@/hooks/useFetch'
-import { IOrder } from '@/types/IOrder'
-import { IProduct } from '@/types/IProduct'
-import { Skeleton } from 'antd'
 import React from 'react'
 
-type Props = IOrder & {
-    handleRemove: (id: string) => void,
+type Props = {
+    productId: string,
     quantity: number,
+    price: number,
+    name: string,
+    image: string,
+    handleRemove: (id: string) => void,
     onQuantityChange: (delta: number) => void
 }
 
-const ProductItem = ({
+const CartItem = ({
     productId,
     quantity,
-    cartId,
-    cartPrice,
+    price,
+    name,
+    image,
     handleRemove,
     onQuantityChange
-}: {
-    productId: string,
-    quantity: number,
-    cartId: string,
-    cartPrice: number,
-    handleRemove: (id: string) => void,
-    onQuantityChange: (delta: number) => void
-}) => {
-    const { data: product, loading } = useFetch<IProduct>(`/products/${productId}`)
-    if (loading ?? !product) return <Skeleton active />
+}: Props) => {
     return (
-        <>
-            <img
-                src={product.images[0] ?? '/no-image.png'}
-                alt={product.name ?? 'No name'}
-                className="w-24 h-24 object-cover rounded"
-            />
-            <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-800">
-                    {product.name ?? 'No name'}
-                </h3>
-                <p className="text-gray-600">{product.price}</p>
+        <div className='flex items-center justify-between bg-white p-4 rounded-lg shadow-md mb-4'>
+            <img src={image} alt={name} className="w-20 h-20 object-cover rounded" />
+            <div className="flex-1 ml-4">
+                <div className="font-bold">{name}</div>
                 <div className="flex items-center mt-2 space-x-4">
                     <div className="flex items-center border rounded">
                         <button
@@ -55,36 +40,14 @@ const ProductItem = ({
                             +
                         </button>
                     </div>
-                    <button className="text-red-500 hover:text-red-700">
-                        <span className="material-icons" onClick={() => handleRemove(productId)}>
-                            delete
-                        </span>
+                    <button className="text-red-500 hover:text-red-700" onClick={() => handleRemove(productId)}>
+                        <span className="material-icons">delete</span>
                     </button>
                 </div>
             </div>
-        </>
-    )
-}
-
-const CartItem = ({ handleRemove, quantity, onQuantityChange, ...cart }: Props) => {
-    return (
-        <div className='flex items-center justify-between bg-white p-4 rounded-lg shadow-md mb-4'>
-            {cart.products.map((prd, idx) => (
-                <React.Fragment key={`${cart._id}-${prd.productId}-${idx}`}>
-                    <ProductItem
-                        cartId={cart._id}
-                        cartPrice={cart.price}
-                        quantity={quantity}
-                        handleRemove={handleRemove}
-                        productId={prd.productId}
-                        onQuantityChange={onQuantityChange}
-                    />
-                    <p className="text-lg font-semibold text-gray-800">
-                        ${(cart.price * quantity).toFixed(2)}
-                    </p>
-                </React.Fragment>
-            ))}
-
+            <p>
+                {(Number(price) * Number(quantity)).toLocaleString()}₫
+            </p>
         </div>
     )
 }

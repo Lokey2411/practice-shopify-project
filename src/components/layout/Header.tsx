@@ -46,7 +46,7 @@ export default function Header() {
 	const handleSearch = (value: string) => {
 		navigate(`/products?name=${encodeURIComponent(value)}`);
 		//setSearchValue();
-		setShowDropdown(false); 
+		setShowDropdown(false);
 	};
 
 	const onChange = (value: string) => {

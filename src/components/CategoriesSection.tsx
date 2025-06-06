@@ -3,6 +3,7 @@ import React from 'react'
 import { ICategory } from '@/types/ICategory'
 
 import Badge from './Badge'
+import clsx from 'clsx'
 
 type Props = {
 	categories: ICategory[]
@@ -36,18 +37,18 @@ const CategoriesSection: React.FC<Props> = ({ categories, selectedCategory, onSe
 					<button
 						key={cat.name}
 						onClick={() => onSelect(cat.name)}
-						className={`w-32 flex flex-col items-center justify-center border rounded-md px-4 py-6 text-sm transition-all
-			  ${selectedCategory === cat.name
+						className={clsx(
+							'w-32 flex flex-col items-center justify-center border rounded-md px-4 py-6 text-sm transition-all',
+							selectedCategory === cat.name
 								? 'bg-red-500 text-white border-red-500'
 								: 'bg-white text-black border-gray-300 hover:border-red-400'
-							}
-			`}>
-
+						)}
+					>
 						<div>{cat.name}</div>
 					</button>
 				))}
 			</div>
-		</div>
+		</div >
 	)
 }
 

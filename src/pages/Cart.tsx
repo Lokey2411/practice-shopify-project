@@ -9,13 +9,17 @@ const Cart = () => {
   const [refresh, setRefresh] = useState(false);
   const { data, loading } = useFetch<IOrder[]>('/carts');
   const [quantities, setQuantities] = useState<{ [id: string]: number }>({});
+  const [productPrices, setProductPrices] = useState<{ [id: string]: number }>({});
+  const [productDetails, setProductDetails] = useState<{ [id: string]: { name: string, image: string } }>({});
+
+
+  const allProducts = Array.isArray(data)
+    ? data.flatMap(order => order.products)
+    : [];
 
 
   useEffect(() => {
-
     if (Array.isArray(data)) {
-
-      const allProducts = data.flatMap(order => order.products);
       const productQuantities = allProducts.reduce((obj, prd) => {
         obj[prd.productId] = prd.quantity;
         return obj;
@@ -24,57 +28,85 @@ const Cart = () => {
     }
   }, [data]);
 
+  useEffect(() => {
+    const fetchDetails = async () => {
+      const prices: { [id: string]: number } = {};
+      const details: { [id: string]: { name: string, image: string } } = {};
+      await Promise.all(
+        allProducts.map(async prd => {
+          try {
+            const res = await Http.get(`/products/${prd.productId}`);
+            const data = res.data?.data || {};
+            prices[prd.productId] = Number(String(data.price).replace(/[^\d]/g, '')) || 0;
+            details[prd.productId] = {
+              name: data.name || '',
+              image: data.images?.[0] || '',
+            };
+          } catch {
+            prices[prd.productId] = 0;
+            details[prd.productId] = { name: '', image: '' };
+          }
+        })
+      );
+      setProductPrices(prices);
+      setProductDetails(details);
+    };
+    if (allProducts.length > 0) fetchDetails();
+  }, [allProducts.length]);
+
   if (loading) return <div className="text-center py-20 text-xl font-semibold">Đang tải...</div>;
 
-  const cartItems = Array.isArray(data) ? data : [];
-
-  // Tính tổng tiền dựa trên số lượng
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * (quantities[item._id] || 1),
+  // Tính tổng tiền dựa trên số lượng và giá đã fetch
+  const subtotal = allProducts.reduce(
+    (sum, prd) => sum + (productPrices[prd.productId] || 0) * (quantities[prd.productId] ?? prd.quantity ?? 1),
     0
   );
   const tax = subtotal * 0.1;
   const total = subtotal + tax;
 
   // Xử lý tăng/giảm số lượng
-  const handleQuantityChange = (id: string, delta: number) => {
+  const handleQuantityChange = (productId: string, delta: number) => {
     setQuantities(prev => ({
       ...prev,
-      [id]: Math.max(1, (prev[id] || 1) + delta)
+      [productId]: Math.max(1, (prev[productId] ?? 1) + delta)
     }));
   };
 
   const handleRemove = async (productId: string) => {
     try {
-      await Http.delete('/carts', { data: { productId } });
-      message.success('Xóa sản phẩm khỏi giỏ hàng thành công!');
-      setRefresh(r => !r); // refetch lại giỏ hàng
-      window.location.reload();
+      console.log('Xóa sản phẩm:', productId); // Thêm log
+      const res = await Http.delete('/carts', { data: { productId } });
+      console.log('Kết quả xóa:', res);
+      setRefresh(r => !r);
     } catch (err) {
       message.error('Xóa sản phẩm thất bại!');
     }
   };
 
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-pink-50 py-10">
       <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-4xl font-extrabold text-pink-700 mb-10 text-center drop-shadow">Giỏ Sách/Truyện của bạn</h1>
+        <h1 className="text-4xl font-extrabold text-pink-700 mb-10 text-center drop-shadow">
+          Giỏ Sách/Truyện của bạn
+        </h1>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2">
-            {cartItems.length === 0 ? (
+            {allProducts.length === 0 ? (
               <div className="bg-white rounded-xl shadow-lg p-10 text-center">
                 <p className="text-gray-500 text-lg">Giỏ hàng của bạn đang trống.</p>
               </div>
-            ) : ( 
+            ) : (
               <div className="space-y-6">
-                {cartItems.map((item) => (
+                {allProducts.map(prd => (
                   <CartItem
-                    key={item._id}
-                    {...item}
-                    quantity={quantities[item._id] || 1}
-                    onQuantityChange={(delta) => handleQuantityChange(item._id, delta)}
+                    key={prd.productId}
+                    productId={prd.productId}
+                    quantity={quantities[prd.productId] ?? prd.quantity ?? 1}
+                    price={productPrices[prd.productId] || 0}
+                    name={productDetails[prd.productId]?.name || ''}
+                    image={productDetails[prd.productId]?.image || ''}
                     handleRemove={handleRemove}
+                    onQuantityChange={delta => handleQuantityChange(prd.productId, delta)}
                   />
                 ))}
               </div>
