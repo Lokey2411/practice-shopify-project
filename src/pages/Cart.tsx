@@ -78,6 +78,7 @@ const Cart = () => {
       const res = await Http.delete('/carts', { data: { productId } });
       console.log('Kết quả xóa:', res);
       setRefresh(r => !r);
+      window.location.reload();
     } catch (err) {
       message.error('Xóa sản phẩm thất bại!');
     }

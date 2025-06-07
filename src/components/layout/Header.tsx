@@ -1,4 +1,4 @@
-import { Dropdown, Flex, Input, Menu, MenuProps, Select } from 'antd';
+import { Badge, Dropdown, Flex, Input, Menu, MenuProps, Select } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DownOutlined, HeartOutlined, SearchOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { UserOutlined } from '@ant-design/icons';
@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from 'react';
 import useNotification from 'antd/es/notification/useNotification';
 import { useFetch } from '@/hooks/useFetch';
 import { IProduct } from '@/types/IProduct';
+import CartItem from '../CartItem';
 const navigationLabels = [
 	{ isLogin: true, path: '/', display: 'Home' },
 	{ isLogin: true, path: '/contact', display: 'Contact' },
@@ -27,8 +28,8 @@ export default function Header() {
 	const { data: products } = useFetch<IProduct[]>('/products');
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const [showDropdown, setShowDropdown] = useState(false);
+	const [cartCount, setCartCount] = useState(0);
 	const key = 'updatable';
-
 
 	useEffect(() => {
 		if (searchValue.trim() === '') {
@@ -124,10 +125,14 @@ export default function Header() {
 
 						<div className="flex gap-4 items-center">
 							<Link to="/WishList">
-								<HeartOutlined className={iconClassName} />
+								<Badge count={0} showZero>
+									<HeartOutlined className={iconClassName} />
+								</Badge>
 							</Link>
 							<Link to="/cart">
-								<ShoppingCartOutlined className={iconClassName} />
+								<Badge count={cartCount} showZero>
+									<ShoppingCartOutlined className={iconClassName} />
+								</Badge>
 							</Link>
 							<Dropdown
 								overlay={

@@ -4,7 +4,8 @@ import { IProduct } from "@/types/IProduct";
 import { useState } from "react";
 import { Rate, Skeleton, Button, notification } from "antd";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
-import Http from "@/services/Api"; 
+import Image from "antd/es/image";
+import Http from "@/services/Api";
 
 const DetailProduct = () => {
     const { id } = useParams();
@@ -59,7 +60,7 @@ const DetailProduct = () => {
                     <div className="w-full md:w-1/2 flex flex-col gap-4">
                         {/* Ảnh chính */}
                         <div className="w-full h-[500px] bg-gray-100 flex items-center justify-center rounded-2xl overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-                            <img
+                            <Image
                                 src={product.images[selectedImage]}
                                 alt="Product"
                                 className="max-h-full max-w-full object-contain transition-all duration-500"
@@ -76,7 +77,7 @@ const DetailProduct = () => {
                                         : "border-transparent hover:border-gray-300"
                                         }`}
                                 >
-                                    <img
+                                    <Image
                                         src={img}
                                         alt={`Thumb ${index}`}
                                         className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"

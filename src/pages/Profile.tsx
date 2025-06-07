@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Image from 'antd/es/image';
 const Profile = () => {
     return (
         <div className="min-h-screen bg-gray-100 py-8">
@@ -8,7 +8,7 @@ const Profile = () => {
                 <div className="bg-white rounded-xl shadow p-6 w-full md:w-1/3 flex flex-col items-center">
                     <div className="mb-6">
                         <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center border-4 border-gray-200 mb-2">
-                            <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="avatar" className="w-20 h-20 rounded-full" />
+                            <Image src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="avatar" className="w-20 h-20 rounded-full" />
                         </div>
                         <div className="text-center">
                             <span className="block text-gray-700 font-semibold mb-1">Thành viên Bạc</span>

@@ -1,6 +1,14 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Image } from 'antd';
 const About = () => {
+  const Statistics = [
+    { value: '10.5K', label: 'Sellers active on our site' },
+    { value: '$36K', label: 'Monthly product sales' },
+    { value: '45.5K', label: 'Customers active on our site' },
+    { value: '25K', label: 'Annual gross sales on our site' },
+  ];
+
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumbs */}
@@ -29,22 +37,12 @@ const About = () => {
 
       {/* Statistics Section */}
       <section className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center my-12">
-        <div>
-          <h3 className="text-3xl font-bold">10.5K</h3>
-          <p className="text-gray-500">Sellers active on our site</p>
-        </div>
-        <div>
-          <h3 className="text-3xl font-bold text-red-500">$36K</h3>
-          <p className="text-gray-500">Monthly product sales</p>
-        </div>
-        <div>
-          <h3 className="text-3xl font-bold">45.5K</h3>
-          <p className="text-gray-500">Customers active on our site</p>
-        </div>
-        <div>
-          <h3 className="text-3xl font-bold">25K</h3>
-          <p className="text-gray-500">Annual gross sales on our site</p>
-        </div>
+        {Statistics.map((stat, index) => (
+          <div key={index} className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-3xl font-bold text-blue-600">{stat.value}</h2>
+            <p className="text-gray-500 mt-2">{stat.label}</p>
+          </div>
+        ))}
       </section>
 
       {/* Team Section */}

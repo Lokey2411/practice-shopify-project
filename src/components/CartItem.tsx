@@ -1,5 +1,6 @@
 import React from 'react'
-
+import Image from 'antd/es/image'
+import { DeleteOutlined } from '@ant-design/icons'
 type Props = {
     productId: string,
     quantity: number,
@@ -21,7 +22,7 @@ const CartItem = ({
 }: Props) => {
     return (
         <div className='flex items-center justify-between bg-white p-4 rounded-lg shadow-md mb-4'>
-            <img src={image} alt={name} className="w-20 h-20 object-cover rounded" />
+            <Image src={image} alt={name} rootClassName="w-20 h-30 object-cover rounded" />
             <div className="flex-1 ml-4">
                 <div className="font-bold">{name}</div>
                 <div className="flex items-center mt-2 space-x-4">
@@ -40,8 +41,11 @@ const CartItem = ({
                             +
                         </button>
                     </div>
-                    <button className="text-red-500 hover:text-red-700" onClick={() => handleRemove(productId)}>
-                        <span className="material-icons">delete</span>
+                    <button
+                        className="text-red-500 hover:text-red-700"
+                        onClick={() => handleRemove(productId)}
+                    >
+                        <DeleteOutlined style={{ fontSize: 22 }} />
                     </button>
                 </div>
             </div>

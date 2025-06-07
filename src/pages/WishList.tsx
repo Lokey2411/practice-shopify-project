@@ -4,7 +4,8 @@ import IWishList from '@/types/IWishLish';
 import React from 'react'
 
 const WishList = () => {
-  const { data: products } = useFetch<IWishList[]>('/WishList');
+  const { data: products } = useFetch<IWishList[]>('/favorites');
+  console.log(products);
   return (
     <div>
       <h2 className='text-3xl text-pink-400 font-bold'>My wish lish</h2>
