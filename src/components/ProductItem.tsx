@@ -54,6 +54,23 @@ const ProductItem: React.FC<IProduct> = ({
 		}
 	};
 
+	const handleAddToWishlist = async (e: React.MouseEvent) => {
+		e.preventDefault();
+		try {
+			await Http.post('/favorites', { productId: _id });
+			api.success({
+				message: 'Đã thêm vào yêu thích ❤️',
+				description: `Sản phẩm "${name}" đã được thêm vào danh sách yêu thích.`,
+			});
+		} catch (error) {
+			console.error(error);
+			api.error({
+				message: 'Lỗi',
+				description: 'Không thể thêm vào danh sách yêu thích!',
+			});
+		}
+	};
+
 	return (
 		<>
 			{contextHolder}
@@ -69,7 +86,7 @@ const ProductItem: React.FC<IProduct> = ({
 						className="w-full h-full object-cover"
 					/>
 					<div className="absolute top-2 right-2 flex flex-col gap-2">
-						<span className={iconClassName}><HeartOutlined /></span>
+						<span className={iconClassName} onClick={handleAddToWishlist}><HeartOutlined /></span>
 						<span className={iconClassName}><EyeOutlined /></span>
 					</div>
 				</div>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { ICategory } from './../types/ICategory'
 import Slider from '@/components/Slider'
 import ProductSection from '@/components/ProductSection'

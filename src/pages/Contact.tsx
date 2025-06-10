@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Button, Col } from 'antd'
+import { Input, Button } from 'antd'
 import { MailOutlined, PhoneOutlined } from '@ant-design/icons'
 import Breadcrumbs from '@/components/Breadcrumbs'
 

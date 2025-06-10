@@ -1,13 +1,12 @@
-import { Badge, Dropdown, Flex, Input, Menu, MenuProps, Select } from 'antd';
+import { Badge, Dropdown, Flex, Menu, Select } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { DownOutlined, HeartOutlined, SearchOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { DownOutlined, HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { UserOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 import { useState, useEffect, useRef } from 'react';
 import useNotification from 'antd/es/notification/useNotification';
 import { useFetch } from '@/hooks/useFetch';
 import { IProduct } from '@/types/IProduct';
-import CartItem from '../CartItem';
 const navigationLabels = [
 	{ isLogin: true, path: '/', display: 'Home' },
 	{ isLogin: true, path: '/contact', display: 'Contact' },
@@ -44,11 +43,6 @@ export default function Header() {
 		}
 	}, [searchValue, products]);
 
-	const handleSearch = (value: string) => {
-		navigate(`/products?name=${encodeURIComponent(value)}`);
-		//setSearchValue();
-		setShowDropdown(false);
-	};
 
 	const onChange = (value: string) => {
 		navigate(`/detail/${value}`)
