@@ -7,6 +7,7 @@ import { ErrorComponent } from '@refinedev/core'
 import { Header } from '@/components'
 import { ProductCreate, ProductEdit, ProductList, ProductShow } from '@/pages/products'
 import { SliderList, SliderCreate, SliderEdit, SliderShow } from '@/pages/sliders'
+import { OrderList, OrderShow } from '@/pages/orders'
 
 const DashboardRoute = () => {
 	return (
@@ -42,6 +43,11 @@ const DashboardRoute = () => {
 					<Route path='edit/:id' element={<SliderEdit />} />
 					<Route path='show/:id' element={<SliderShow />} />
 				</Route>
+				<Route path='/orders'>
+					<Route index element={<OrderList />} />
+					<Route path='show/:id' element={<OrderShow />} />
+				</Route>
+
 				<Route path='*' element={<ErrorComponent />} />
 			</Route>
 		</Routes>
