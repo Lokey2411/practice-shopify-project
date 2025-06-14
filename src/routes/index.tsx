@@ -12,6 +12,7 @@ import Login from '@/pages/Login'
 import Home from '@/pages/Home'
 import DetailProduct from '@/pages/DetailProduct'
 import Profile from '@/pages/Profile'
+import CheckoutForm from '@/pages/CheckoutForm'
 
 
 export default function AppRouter() {
@@ -36,6 +37,7 @@ export default function AppRouter() {
 					<Route path='/cart' element={<PrivateRoute><Cart /></PrivateRoute>} />
 					<Route path='/detail/:id' element={<DetailProduct></DetailProduct>} />
 					<Route path='*' element={<NotFound />} />
+					<Route path="/checkout" element={<CheckoutForm />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>

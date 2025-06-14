@@ -4,6 +4,7 @@ import { IOrder } from '@/types/IOrder';
 import Http from '@/services/Api';
 import { message } from 'antd';
 import CartItem from '@/components/CartItem';
+import DeleteButton from '@/components/DeleteButton';
 
 const Cart = () => {
   const [refresh, setRefresh] = useState(false);
@@ -98,17 +99,23 @@ const Cart = () => {
               </div>
             ) : (
               <div className="space-y-6">
-                {allProducts.map(prd => (
-                  <CartItem
-                    key={prd.productId}
-                    productId={prd.productId}
-                    quantity={quantities[prd.productId] ?? prd.quantity ?? 1}
-                    price={productPrices[prd.productId] || 0}
-                    name={productDetails[prd.productId]?.name || ''}
-                    image={productDetails[prd.productId]?.image || ''}
-                    handleRemove={handleRemove}
-                    onQuantityChange={delta => handleQuantityChange(prd.productId, delta)}
-                  />
+                {allProducts.map((prd, index) => (
+                  <div key={`${prd.productId}-${index}`} className="relative">
+                    <CartItem
+                      productId={prd.productId}
+                      quantity={quantities[prd.productId] ?? prd.quantity ?? 1}
+                      price={productPrices[prd.productId] || 0}
+                      name={productDetails[prd.productId]?.name || ''}
+                      image={productDetails[prd.productId]?.image || ''}
+                      onQuantityChange={delta => handleQuantityChange(prd.productId, delta)}
+                    />
+
+                    <DeleteButton
+                      refetch={() => setRefresh(prev => !prev)}
+                      resource="carts"
+                      id={prd.productId}
+                    />
+                  </div>
                 ))}
               </div>
             )}
