@@ -1,12 +1,10 @@
 import { IUser } from '@/types/IUser'
 import {
-    CarOutlined,
     CheckCircleOutlined,
     CloseCircleOutlined,
-    InboxOutlined,
     RollbackOutlined,
 } from '@ant-design/icons'
-import { List, ShowButton, useSelect, useTable } from '@refinedev/antd'
+import { List, ShowButton, useTable } from '@refinedev/antd'
 import { useList, useUpdate, type BaseRecord } from '@refinedev/core'
 import { Button, Form, Input, Space, Table } from 'antd'
 import moment from 'moment'
@@ -35,13 +33,12 @@ export const OrderList = () => {
         resource: 'orders',
     })
 
-    const {
-        selectProps: { options: statusOptions },
-    } = useSelect({
-        resource: 'orders/statuses',
-        optionLabel: 'status',
-        optionValue: 'status',
-    })
+    const statusOptions = [
+        { label: 'Pending', value: 'Pending' },
+        { label: 'Completed', value: 'Completed' },
+        { label: 'Cancelled', value: 'Cancelled' },
+    ];
+
     const filterByStatus = (status: string) => {
         setFilters({
             ...defaultFilters,
@@ -63,17 +60,15 @@ export const OrderList = () => {
         })
     }
 
-    // Đồng bộ dataSource với tableDataSource
     useEffect(() => {
         if (tableDataSource) {
-            setDataSource([...tableDataSource]) // Tạo bản sao
+            setDataSource([...tableDataSource])
         }
     }, [tableDataSource])
 
-    // Lọc dữ liệu thủ công
     useEffect(() => {
         if (!tableDataSource) return
-        let filteredData = [...tableDataSource] // Tạo bản sao để lọc
+        let filteredData = [...tableDataSource]
         if (filters.status) {
             filteredData = filteredData.filter(order => order.STATUS === filters.status)
         }
@@ -86,7 +81,6 @@ export const OrderList = () => {
         setDataSource(filteredData)
     }, [tableDataSource, filters])
 
-    // Hàm lấy username từ userId
     const getUsername = (userId: number) => {
         const user = usersData?.data.find(user => user.id === userId)
         return user?.username ?? userId
@@ -94,6 +88,13 @@ export const OrderList = () => {
     const selectClassName =
         'w-full bg-white dark:bg-black p-2 transition-all duration-300 rounded border border-black dark:border-white capitalize'
     const updateStatus = (record: BaseRecord, status: string) => {
+        // Cập nhật cục bộ trước khi gửi yêu cầu server
+        const updatedData = dataSource.map(item =>
+            item.id === record.id ? { ...item, STATUS: status } : item
+        )
+        setDataSource(updatedData)
+
+        // Gửi yêu cầu cập nhật đến server
         updateStatusMutation({
             id: record.id,
             values: {
@@ -161,36 +162,21 @@ export const OrderList = () => {
                                 type='dashed'
                                 size='small'
                                 icon={<RollbackOutlined />}
-                                title='Mark as pending'
-                                onClick={() => updateStatus(record, 'pending')}></Button>
-                            <Button
-                                className='border-yellow-300 text-yellow-300'
-                                size='small'
-                                icon={<InboxOutlined />}
-                                title='Mark as preparing'
-                                onClick={() => updateStatus(record, 'preparing')}></Button>
-                            <Button
-                                className='border-white text-white'
-                                size='small'
-                                icon={<CarOutlined />}
-                                onClick={() => updateStatus(record, 'shipping')}
-                                title='Mark as shipping'></Button>
+                                title='Mark as Pending'
+                                onClick={() => updateStatus(record, 'Pending')}></Button>
                             <Button
                                 className='border-green-300 text-green-300'
                                 size='small'
-                                onClick={() => updateStatus(record, 'delivered')}
                                 icon={<CheckCircleOutlined />}
-                                title='Mark as delivered'></Button>
-                            <ShowButton hideText size='small' recordItemId={record.id} title='Check this order' />
+                                title='Mark as Completed'
+                                onClick={() => updateStatus(record, 'Completed')}></Button>
                             <Button
-                                onClick={() => {
-                                    updateStatus(record, 'canceled')
-                                }}
                                 size='small'
                                 icon={<CloseCircleOutlined />}
                                 danger
-                                title='Cancel this order'
-                            />
+                                title='Mark as Cancelled'
+                                onClick={() => updateStatus(record, 'Cancelled')}></Button>
+                            <ShowButton hideText size='small' recordItemId={record.id} title='Check this order' />
                         </Space>
                     )}
                 />
