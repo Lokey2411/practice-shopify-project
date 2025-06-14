@@ -1,4 +1,3 @@
-import React from 'react'
 import Image from 'antd/es/image'
 import { DeleteOutlined } from '@ant-design/icons'
 type Props = {

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import { IOrder } from '@/types/IOrder';
 import Http from '@/services/Api';
 import { message } from 'antd';
 import CartItem from '@/components/CartItem';
 import DeleteButton from '@/components/DeleteButton';
+import makeRequest from '@/services/makeRequest';
+import {useNotification} from '@/hooks/useNotification';
 
 const Cart = () => {
   const [refresh, setRefresh] = useState(false);
@@ -17,9 +19,16 @@ const Cart = () => {
   const allProducts = Array.isArray(data)
     ? data.flatMap(order => order.products)
     : [];
-
+  const subtotal = Array.isArray(allProducts)?allProducts.reduce(
+    (sum, prd) => sum + (productPrices[prd.productId] || 0) * (quantities[prd.productId] ?? prd.quantity ?? 1),
+    0
+  ):0;
+  const tax = subtotal * 0.1;
+  const total = subtotal + tax;
+  const notification = useNotification();
 
   useEffect(() => {
+    // setup the quantities
     if (Array.isArray(data)) {
       const productQuantities = allProducts.reduce((obj, prd) => {
         obj[prd.productId] = prd.quantity;
@@ -28,6 +37,12 @@ const Cart = () => {
       setQuantities(productQuantities);
     }
   }, [data]);
+  useEffect(()=>{
+        makeRequest.put('/carts', {price: total}).then((res) => {
+      console.log(res)
+    }).catch((err) => console.log(err));
+
+  }, [total])
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -37,11 +52,11 @@ const Cart = () => {
         allProducts.map(async prd => {
           try {
             const res = await Http.get(`/products/${prd.productId}`);
-            const data = res.data?.data || {};
-            prices[prd.productId] = Number(String(data.price).replace(/[^\d]/g, '')) || 0;
+            const data = res.data?.data ?? {};
+            prices[prd.productId] = Number(String(data.price).replace(/[^\d]/g, ''));
             details[prd.productId] = {
-              name: data.name || '',
-              image: data.images?.[0] || '',
+              name: data.name ?? '',
+              image: data.images?.[0] ?? '',
             };
           } catch {
             prices[prd.productId] = 0;
@@ -58,12 +73,6 @@ const Cart = () => {
   if (loading) return <div className="text-center py-20 text-xl font-semibold">Đang tải...</div>;
 
   // Tính tổng tiền dựa trên số lượng và giá đã fetch
-  const subtotal = allProducts.reduce(
-    (sum, prd) => sum + (productPrices[prd.productId] || 0) * (quantities[prd.productId] ?? prd.quantity ?? 1),
-    0
-  );
-  const tax = subtotal * 0.1;
-  const total = subtotal + tax;
 
   // Xử lý tăng/giảm số lượng
   const handleQuantityChange = (productId: string, delta: number) => {
@@ -81,6 +90,7 @@ const Cart = () => {
       setRefresh(r => !r);
       window.location.reload();
     } catch (err) {
+      console.log(err)
       message.error('Xóa sản phẩm thất bại!');
     }
   };
@@ -102,6 +112,7 @@ const Cart = () => {
                 {allProducts.map((prd, index) => (
                   <div key={`${prd.productId}-${index}`} className="relative">
                     <CartItem
+                    handleRemove={handleRemove}
                       productId={prd.productId}
                       quantity={quantities[prd.productId] ?? prd.quantity ?? 1}
                       price={productPrices[prd.productId] || 0}

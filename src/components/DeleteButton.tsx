@@ -11,7 +11,7 @@ const DeleteButton = ({
     refetch,
 }: {
     resource: string;
-    id: number;
+    id: string;
     params?: any;
     refetch: any;
 }) => {
