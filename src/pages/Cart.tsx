@@ -4,15 +4,14 @@ import { IOrder } from '@/types/IOrder';
 import Http from '@/services/Api';
 import { message } from 'antd';
 import CartItem from '@/components/CartItem';
-import DeleteButton from '@/components/DeleteButton';
-
+import { useNavigate } from 'react-router-dom';
 const Cart = () => {
   const [refresh, setRefresh] = useState(false);
   const { data, loading } = useFetch<IOrder[]>('/carts');
   const [quantities, setQuantities] = useState<{ [id: string]: number }>({});
   const [productPrices, setProductPrices] = useState<{ [id: string]: number }>({});
   const [productDetails, setProductDetails] = useState<{ [id: string]: { name: string, image: string } }>({});
-
+  const navigate = useNavigate();
 
   const allProducts = Array.isArray(data)
     ? data.flatMap(order => order.products)
@@ -108,12 +107,7 @@ const Cart = () => {
                       name={productDetails[prd.productId]?.name || ''}
                       image={productDetails[prd.productId]?.image || ''}
                       onQuantityChange={delta => handleQuantityChange(prd.productId, delta)}
-                    />
-
-                    <DeleteButton
-                      refetch={() => setRefresh(prev => !prev)}
-                      resource="carts"
-                      id={prd.productId}
+                      handleRemove={handleRemove} // ✅ thêm dòng này
                     />
                   </div>
                 ))}
@@ -138,7 +132,15 @@ const Cart = () => {
                 </div>
               </div>
             </div>
-            <button className="w-full mt-8 bg-pink-600 text-white py-3 rounded-xl text-lg font-bold hover:bg-pink-700 transition duration-300 shadow">
+            <button
+              className="w-full mt-8 bg-pink-600 text-white py-3 rounded-xl text-lg font-bold hover:bg-pink-700 transition duration-300 shadow"
+              onClick={() => navigate('/checkout', {
+                state: {
+                  products: allProducts,
+                  total: total
+                }
+              })}
+            >
               Thanh toán ngay
             </button>
           </div>
