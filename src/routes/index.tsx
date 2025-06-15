@@ -13,6 +13,7 @@ import Home from '@/pages/Home'
 import DetailProduct from '@/pages/DetailProduct'
 import Profile from '@/pages/Profile'
 import CheckoutForm from '@/pages/CheckoutForm'
+import BookReview from '@/pages/BookReview'
 
 
 export default function AppRouter() {
@@ -38,6 +39,7 @@ export default function AppRouter() {
 					<Route path='/detail/:id' element={<DetailProduct></DetailProduct>} />
 					<Route path='*' element={<NotFound />} />
 					<Route path="/checkout" element={<CheckoutForm />} />
+					<Route path="/BookReview" element={<BookReview />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>

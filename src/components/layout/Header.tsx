@@ -137,6 +137,9 @@ export default function Header() {
 										<Menu.Item key="logout" onClick={logout}>
 											Logout
 										</Menu.Item>
+										<Menu.Item key="Review" >
+											<Link to="/BookReview">Đánh giá sách</Link>
+										</Menu.Item>
 									</Menu>
 								}
 							>

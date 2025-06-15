@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useFetch } from "@/hooks/useFetch";
 import { IProduct } from "@/types/IProduct";
 import { useState } from "react";
@@ -9,6 +9,7 @@ import Http from "@/services/Api";
 
 const DetailProduct = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { data: product } = useFetch<IProduct>(`/products/${id}`);
     const [selectedImage, setSelectedImage] = useState(0);
     const [api, contextHolder] = notification.useNotification();
@@ -49,6 +50,11 @@ const DetailProduct = () => {
                 description: 'There was an issue adding the product.',
             });
         }
+    };
+
+    // Navigate to review page
+    const goToReview = () => {
+        navigate(`/BookReview/${id}`);
     };
 
     return (
@@ -129,6 +135,14 @@ const DetailProduct = () => {
                                 onClick={() => setLiked(!liked)}
                                 className="border-gray-300 transition-all duration-300"
                             />
+                            <Button
+                                type="default"
+                                size="large"
+                                className="rounded-xl bg-green-600 text-white hover:bg-green-700 transition-transform duration-300 hover:scale-105"
+                                onClick={goToReview}
+                            >
+                                Đánh giá sách
+                            </Button>
                         </div>
                     </div>
                 </div>
