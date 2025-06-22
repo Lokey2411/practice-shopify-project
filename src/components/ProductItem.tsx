@@ -1,6 +1,6 @@
 import React from 'react'
 import { HeartOutlined, EyeOutlined } from '@ant-design/icons'
-import { Image, notification } from 'antd'
+import { Button, Image, notification } from 'antd'
 import { IProduct } from '@/types/IProduct'
 import { Link } from 'react-router-dom'
 import Http from '@/services/Api'
@@ -103,12 +103,12 @@ const ProductItem: React.FC<IProduct> = ({
 
 					<div className="mt-3 flex justify-between items-center">
 						<span className="text-lg font-bold text-red-600">{price.toLocaleString()}₫</span>
-						<button
+						<Button
 							onClick={addToCart}
 							className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded"
 						>
 							Thêm vào giỏ
-						</button>
+						</Button>
 					</div>
 				</div>
 			</Link>

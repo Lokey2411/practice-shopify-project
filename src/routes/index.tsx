@@ -13,7 +13,8 @@ import Home from '@/pages/Home'
 import DetailProduct from '@/pages/DetailProduct'
 import Profile from '@/pages/Profile'
 import CheckoutForm from '@/pages/CheckoutForm'
-import BookReview from '@/pages/BookReview'
+import Wishlist from '@/pages/WishList'
+import CheckoutPage from '@/pages/CheckoutForm'
 
 
 export default function AppRouter() {
@@ -38,8 +39,10 @@ export default function AppRouter() {
 					<Route path='/cart' element={<PrivateRoute><Cart /></PrivateRoute>} />
 					<Route path='/detail/:id' element={<DetailProduct></DetailProduct>} />
 					<Route path='*' element={<NotFound />} />
+					<Route path="/orders/:id/checkout" element={<CheckoutPage />} />
 					<Route path="/checkout" element={<CheckoutForm />} />
-					<Route path="/BookReview" element={<BookReview />} />
+
+					<Route path="/wishlist" element={<Wishlist />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>

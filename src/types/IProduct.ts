@@ -6,7 +6,7 @@ export interface IProduct {
 	name: string;
 	categories: ICategory[];
 	images: string[];
-	price: string;
+	price: number;
 	isDeleted: boolean;
 	createdAt: string;
 	updatedAt: string;

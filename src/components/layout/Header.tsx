@@ -1,12 +1,21 @@
-import { Badge, Dropdown, Flex, Menu, Select } from 'antd';
+import { Badge, Dropdown, Flex, Menu, Select, Button } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { DownOutlined, HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import { UserOutlined } from '@ant-design/icons';
+import {
+	HeartOutlined,
+	ShoppingCartOutlined,
+	UserOutlined,
+	LogoutOutlined,
+	CloseCircleOutlined,
+	ShoppingOutlined,
+} from '@ant-design/icons';
 import clsx from 'clsx';
 import { useState, useEffect, useRef } from 'react';
 import useNotification from 'antd/es/notification/useNotification';
 import { useFetch } from '@/hooks/useFetch';
 import { IProduct } from '@/types/IProduct';
+
+const profileControlClassName = 'text-white hover:text-blue-300';
+
 const navigationLabels = [
 	{ isLogin: true, path: '/', display: 'Home' },
 	{ isLogin: true, path: '/contact', display: 'Contact' },
@@ -24,18 +33,26 @@ export default function Header() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [searchValue, setSearchValue] = useState('');
 	const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
-	const { data: products } = useFetch<IProduct[]>('/products');
+	const { data: products, error } = useFetch<IProduct[]>('/products');
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [cartCount, setCartCount] = useState(0);
-	const key = 'updatable';
+
+	useEffect(() => {
+		if (error) {
+			notification.error({
+				message: 'Error Loading Products',
+				description: 'Unable to fetch products. Please try again later.',
+			});
+		}
+	}, [error, notification]);
 
 	useEffect(() => {
 		if (searchValue.trim() === '') {
 			setFilteredProducts([]);
 			setShowDropdown(false);
 		} else {
-			const filtered = products?.filter(product =>
+			const filtered = products?.filter((product) =>
 				product.name.toLowerCase().includes(searchValue.toLowerCase())
 			);
 			setFilteredProducts(filtered || []);
@@ -43,9 +60,8 @@ export default function Header() {
 		}
 	}, [searchValue, products]);
 
-
 	const onChange = (value: string) => {
-		navigate(`/detail/${value}`)
+		navigate(`/detail/${value}`);
 	};
 
 	const logout = () => {
@@ -55,8 +71,8 @@ export default function Header() {
 		notification.success({
 			message: 'Logout Successful',
 			description: 'You have successfully logged out.',
-		})
-	}
+		});
+	};
 
 	useEffect(() => {
 		if (localStorage.getItem('token')) {
@@ -66,10 +82,7 @@ export default function Header() {
 		}
 	}, []);
 
-	const navilabel = navigationLabels
-		.filter(({ isLogin }) => isLogin === isLoggedIn)
-
-
+	const navilabel = navigationLabels.filter(({ isLogin }) => isLogin === isLoggedIn);
 
 	return (
 		<header className="w-full shadow px-6 py-4 z-50 sticky top-0 bg-white">
@@ -80,9 +93,8 @@ export default function Header() {
 						Logo
 					</Link>
 					{navilabel.map((item) => (
-						<div>
+						<div key={item.path}>
 							<Link
-								key={item.path}
 								to={item.path}
 								className={clsx(
 									'text-base text-gray-700 hover:text-blue-600 transition-colors',
@@ -93,8 +105,6 @@ export default function Header() {
 							</Link>
 						</div>
 					))}
-
-
 				</div>
 
 				{isLoggedIn && (
@@ -108,7 +118,7 @@ export default function Header() {
 								className="w-64"
 								options={
 									products
-										? products.map(item => ({
+										? products.map((item) => ({
 											label: item.name,
 											value: item._id,
 										}))
@@ -128,31 +138,53 @@ export default function Header() {
 									<ShoppingCartOutlined className={iconClassName} />
 								</Badge>
 							</Link>
-							<Dropdown
-								overlay={
-									<Menu>
-										<Menu.Item key="profile">
-											<Link to="/profile">Profile</Link>
-										</Menu.Item>
-										<Menu.Item key="logout" onClick={logout}>
-											Logout
-										</Menu.Item>
-										<Menu.Item key="Review" >
-											<Link to="/BookReview">Đánh giá sách</Link>
-										</Menu.Item>
-									</Menu>
-								}
-							>
-								<div className="cursor-pointer flex items-center gap-1">
-									<UserOutlined className={iconClassName} />
-									<DownOutlined className="text-sm" />
+							<div className="size-8 group relative">
+								<img
+									src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+									alt="avatar"
+									className="size-full rounded-full"
+									onError={(e) => {
+										e.currentTarget.src = 'https://via.placeholder.com/150'; // Fallback nếu ảnh không tải được
+									}}
+								/>
+								<div
+									className="absolute top-full rounded shadow-lg hidden group-hover:flex group-hover:animate-fly-in right-0 flex-col gap-4 p-5"
+									style={{
+										backgroundColor: 'rgba(0, 0, 0, 0.4)',
+										backdropFilter: 'blur(150px)',
+									}}
+								>
+									<Button href="/profile" icon={<UserOutlined />} className={profileControlClassName}>
+										Manage Account
+									</Button>
+									<Button
+										href="/user/orders"
+										onClick={() => navigate('/user/orders')} // Sử dụng navigate thay vì reload
+										icon={<ShoppingOutlined />}
+										className={profileControlClassName}
+									>
+										My Order
+									</Button>
+									<Button
+										href="/user/orders?status=canceled"
+										onClick={() => navigate('/user/orders?status=canceled')}
+										icon={<CloseCircleOutlined />}
+										className={profileControlClassName}
+									>
+										My Cancellations
+									</Button>
+									<Button
+										icon={<LogoutOutlined />}
+										className={profileControlClassName}
+										onClick={logout}
+									>
+										Logout
+									</Button>
 								</div>
-							</Dropdown>
+							</div>
 						</div>
 					</>
 				)}
-
-
 			</Flex>
 		</header>
 	);
