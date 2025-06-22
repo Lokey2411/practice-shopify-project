@@ -8,7 +8,6 @@ const { Option } = Select;
 const CheckoutForm: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const location = useLocation();
-    const navigate = useNavigate();
     const { carts = [], total = 0 } = location.state || {};
     const orderId = location.state?.orderId || (carts.length > 0 ? carts[0]._id : id);
     console.log("CheckoutForm.tsx orderId from params:", id, "carts:", carts, "state:", location.state, "derived orderId:", orderId);
@@ -24,8 +23,17 @@ const CheckoutForm: React.FC = () => {
 
     const handleOk = () => {
         setIsModalVisible(false);
-        if (modalContent.type === 'success') {
-            navigate('/orders');
+    };
+
+    const submitOrderConfirmation = async () => {
+        try {
+            const response = await makeRequest.post('/orders/confirm', {
+                orderId: orderId,
+            });
+            message.success('Xác nhận đơn hàng thành công!');
+        } catch (error) {
+            console.error('Lỗi xác nhận đơn hàng:', error);
+            message.error('Không thể xác nhận đơn hàng');
         }
     };
 
@@ -91,7 +99,7 @@ const CheckoutForm: React.FC = () => {
 
             <Modal
                 title={modalContent.title}
-                visible={isModalVisible}
+                open={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 okText="OK"
