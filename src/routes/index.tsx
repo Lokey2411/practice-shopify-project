@@ -15,6 +15,7 @@ import Profile from '@/pages/Profile'
 import CheckoutForm from '@/pages/CheckoutForm'
 import Wishlist from '@/pages/WishList'
 import CheckoutPage from '@/pages/CheckoutForm'
+import Orders from '@/components/Order'
 
 
 export default function AppRouter() {
@@ -41,7 +42,7 @@ export default function AppRouter() {
 					<Route path='*' element={<NotFound />} />
 					<Route path="/orders/:id/checkout" element={<CheckoutPage />} />
 					<Route path="/checkout" element={<CheckoutForm />} />
-
+					<Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute>} />x``
 					<Route path="/wishlist" element={<Wishlist />} />
 				</Route>
 			</Routes>
