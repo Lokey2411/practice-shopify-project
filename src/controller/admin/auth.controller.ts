@@ -33,9 +33,10 @@ export const adminLogin = async (req: Request, res: Response) => {
 
 		const { password: userPassword, ...userData } = user // return userData without password
 
-		const token = generateToken(user._id.toString())
+		const token = generateToken(String(user._id)) // NOSONAR
 		return res.json({ message: 'Đăng nhập thành công', token, data: userData })
 	} catch (error) {
+		console.error(error)
 		return res.status(STATUS.INTERNAL_SERVER_ERROR).json('Lỗi server khi đăng nhập')
 	}
 }
@@ -68,9 +69,10 @@ export const adminRegister = async (req: Request, res: Response) => {
 		})
 		await user.save()
 
-		const token = generateToken(user._id.toString())
+		const token = generateToken(String(user._id)) //NOSONAR
 		return res.json({ message: 'Đăng ký admin thành công', token })
 	} catch (error) {
+		console.error(error)
 		return res.status(STATUS.INTERNAL_SERVER_ERROR).json('Lỗi server khi đăng ký')
 	}
 }

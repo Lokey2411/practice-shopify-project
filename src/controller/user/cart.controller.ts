@@ -30,16 +30,14 @@ export const addToCart = async (req: Request, res: Response) => {
 		if (order) {
 			order.products.push(...products)
 			order.price += +price.match(/\d+(?:\.\d+)?/g)[0]
-			await order.save()
-			return res.json('Thêm vào giỏ hàng thành công')
-		}
-		order = new Order({
-			userId,
-			products,
-			price: +price.match(/\d+(?:\.\d+)?/g)[0],
-			address,
-			status: CART_STATUS,
-		})
+		} else
+			order = new Order({
+				userId,
+				products,
+				price: +price.match(/\d+(?:\.\d+)?/g)[0],
+				address,
+				status: CART_STATUS,
+			})
 		await order.save()
 		return res.json('Thêm vào giỏ hàng thành công')
 	} catch (error) {

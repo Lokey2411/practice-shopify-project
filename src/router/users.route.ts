@@ -3,6 +3,7 @@ import { STATUS } from '@/constants'
 import { adminLogin, adminRegister } from '@/controller/admin/auth.controller'
 import { getAllUsers, getUserById, updateUser } from '@/controller/admin/user.controller'
 import { userLogin, userRegister } from '@/controller/user/auth.controller'
+import { getProfile, updateProfile, changePassword } from '@/controller/user/profile.controller'
 import { adminRequire } from '@/middleware/adminRequire'
 import { authMiddleware } from '@/middleware/auth'
 import jwt, { SignOptions } from 'jsonwebtoken'
@@ -18,7 +19,9 @@ userRouter.post('/admin/login', adminLogin)
 userRouter.post('/admin/register', adminRegister)
 userRouter.post('/user/login', userLogin)
 userRouter.post('/user/register', userRegister)
-
+userRouter.get('/profile', authMiddleware, getProfile)
+userRouter.put('/profile', authMiddleware, updateProfile)
+userRouter.patch('/password', authMiddleware, changePassword)
 // check token
 userRouter.post('/token', authMiddleware, (req, res) => {
 	return res.status(STATUS.OK).json({ message: 'Token is valid' })
@@ -37,6 +40,7 @@ userRouter.post('/refresh-token', authMiddleware, (req, res) => {
 		const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN.toString() } as SignOptions)
 		return res.status(STATUS.OK).json({ token })
 	} catch (error) {
+		console.log(error)
 		return res.status(STATUS.UNAUTHORIZED).json({ message: 'Unauthorized - Invalid token' })
 	}
 })
