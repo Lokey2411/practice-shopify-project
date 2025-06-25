@@ -10,6 +10,9 @@ import jwt, { SignOptions } from 'jsonwebtoken'
 
 const express = require('express')
 const userRouter = express.Router()
+userRouter.get('/profile', authMiddleware, getProfile)
+userRouter.put('/profile', authMiddleware, updateProfile)
+userRouter.patch('/password', authMiddleware, changePassword)
 
 userRouter.get('/', authMiddleware, adminRequire, getAllUsers)
 userRouter.put('/:id', authMiddleware, updateUser)
@@ -19,9 +22,6 @@ userRouter.post('/admin/login', adminLogin)
 userRouter.post('/admin/register', adminRegister)
 userRouter.post('/user/login', userLogin)
 userRouter.post('/user/register', userRegister)
-userRouter.get('/profile', authMiddleware, getProfile)
-userRouter.put('/profile', authMiddleware, updateProfile)
-userRouter.patch('/password', authMiddleware, changePassword)
 // check token
 userRouter.post('/token', authMiddleware, (req, res) => {
 	return res.status(STATUS.OK).json({ message: 'Token is valid' })

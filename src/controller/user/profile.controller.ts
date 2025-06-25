@@ -7,7 +7,7 @@ import { Request, Response } from 'express'
 export const getProfile = async (req: Request, res: Response) => {
 	const { userId } = (req as any).user
 	try {
-		const user = await User.findOne({ _id: userId })
+		const user = await User.findById(userId)
 		return res.status(STATUS.OK).json(user)
 	} catch (error) {
 		console.log(error)
