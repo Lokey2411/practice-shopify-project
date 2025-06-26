@@ -23,28 +23,24 @@ export const dataProvider: DataProvider = {
 	...defaultProvider,
 	getList: async <TData extends BaseRecord = BaseRecord>({
 		resource,
-		pagination,
 	}: GetListParams): Promise<GetListResponse<TData>> => {
-		const { current = 1, pageSize = 10 } = pagination ?? {}
-
-		const queryParams = new URLSearchParams({
-			page: (current - 1).toString(),
-			size: pageSize.toString(),
-		})
-
-		const response = await defaultProvider.getOne<{ data: TData[]; total: number }>({
+		const response = await defaultProvider.getList<TData>({
 			resource,
-			id: '',
 			meta: {
 				headers: {
 					...createHeader(`${getToken()}`),
 				},
-				body: { ...queryParams },
 			},
 		})
+		console.log('categories response:', response)
+
+		const res: any = response;
+		const dataArr = Array.isArray(res.data?.data) ? res.data.data : [];
+		const total = res.total ?? res.data?.total ?? res.data?.data?.total ?? 0;
+
 		return {
-			data: response.data.data.map(item => ({ ...item, id: item._id })),
-			total: response.data.total,
+			data: dataArr.map((item: any) => ({ ...item, id: item._id })),
+			total,
 		}
 	},
 

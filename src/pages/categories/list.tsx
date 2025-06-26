@@ -10,32 +10,36 @@ export const CategoryList = () => {
 	})
 
 	return (
-		<List>
-			<Table {...tableProps} rowKey='id'>
-				<Table.Column dataIndex='name' title={'Name'} />
-				<Table.Column
-					dataIndex={'isNewArrival'}
-					title={'New Arrival'}
-					render={(isNewArrival: BaseRecord) => (
-						<BooleanField
-							value={isNewArrival}
-							trueIcon={<CheckCircleOutlined className='text-2xl' />}
-							falseIcon={<CloseCircleOutlined className='text-2xl' />}
+		<div className="p-6 bg-blue-50 rounded-2xl shadow-lg">
+			<List>
+				<div className='overflow-x-auto rounded-lg shadow-lg bg-white'>
+					<Table {...tableProps} rowKey='id' bordered pagination={{ pageSize: 10 }} className='custom-admin-table' style={{ background: 'white', borderRadius: 12 }}>
+						<Table.Column dataIndex='name' title={<span className='text-blue-700 font-bold'>Name</span>} />
+						<Table.Column
+							dataIndex={'isNewArrival'}
+							title={<span className='text-blue-700 font-bold'>New Arrival</span>}
+							render={(isNewArrival: BaseRecord) => (
+								<BooleanField
+									value={isNewArrival}
+									trueIcon={<CheckCircleOutlined className='text-2xl text-green-500' />}
+									falseIcon={<CloseCircleOutlined className='text-2xl text-red-500' />}
+								/>
+							)}
 						/>
-					)}
-				/>
-				<Table.Column
-					title={'Actions'}
-					dataIndex='actions'
-					render={(_, record: BaseRecord) => (
-						<Space>
-							<EditButton hideText size='small' recordItemId={record.id} />
-							<ShowButton hideText size='small' recordItemId={record.id} />
-							<DeleteButton id={record.id ?? ''} />
-						</Space>
-					)}
-				/>
-			</Table>
-		</List>
+						<Table.Column
+							title={<span className='text-blue-700 font-bold'>Actions</span>}
+							dataIndex='actions'
+							render={(_, record: BaseRecord) => (
+								<Space>
+									<EditButton hideText size='small' recordItemId={record.id} style={{ color: '#2563eb', borderColor: '#2563eb' }} />
+									<ShowButton hideText size='small' recordItemId={record.id} style={{ color: '#0ea5e9', borderColor: '#0ea5e9' }} />
+									<DeleteButton id={record.id ?? ''} />
+								</Space>
+							)}
+						/>
+					</Table>
+				</div>
+			</List>
+		</div>
 	)
 }
