@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 export const useFetch = <T>(url: string) => {
 	const [data, setData] = useState<T>();
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<Error | null>(null);
 
 	useEffect(() => {
 		if (!url) {
@@ -15,12 +16,17 @@ export const useFetch = <T>(url: string) => {
 				setLoading(false);
 				if (res.status === 200) {
 					setData(res.data.data);
+					setError(null);
 				} else {
 					throw new Error('Error fetching data');
 				}
 			})
-			.catch(error => { console.log(error); setLoading(false); });
+			.catch(error => {
+				console.log(error);
+				setError(error);
+				setLoading(false);
+			});
 	}, [url]);
 
-	return { data, loading };
+	return { data, loading, error };
 }

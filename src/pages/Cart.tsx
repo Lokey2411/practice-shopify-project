@@ -6,11 +6,12 @@ import { message, notification } from 'antd';
 import CartItem from '@/components/CartItem';
 import { useNavigate } from 'react-router-dom';
 import makeRequest from '@/services/makeRequest';
+import { useApi } from '@/context/ApiContext';
 
 const Cart = () => {
   const [refresh, setRefresh] = useState(false);
-  const { data, loading } = useFetch<IOrder[]>('/carts');
   const [quantities, setQuantities] = useState<{ [id: string]: number }>({});
+  const { cart: data, cartLoading: loading, refetchCart } = useApi();
   const [productPrices, setProductPrices] = useState<{ [id: string]: number }>({});
   const [productDetails, setProductDetails] = useState<{ [id: string]: { name: string, image: string } }>({});
   const navigate = useNavigate();
@@ -83,8 +84,7 @@ const Cart = () => {
   const handleRemove = async (productId: string) => {
     try {
       await Http.delete('/carts', { data: { productId } });
-      setRefresh(r => !r);
-      window.location.reload();
+      await refetchCart();
     } catch (err) {
       api.error({
         message: 'Xóa thất bại',

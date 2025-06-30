@@ -1,162 +1,149 @@
-import React from 'react'
-import { Input, Button, notification } from 'antd'
-import { MailOutlined, PhoneOutlined } from '@ant-design/icons'
-import Breadcrumbs from '@/components/Breadcrumbs'
-import { motion } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
+import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import { Breadcrumb, Button, Card, Flex, Form, Input, Spin, notification } from 'antd';
+import { useForm } from 'antd/es/form/Form';
+import TextArea from 'antd/es/input/TextArea';
+import { Link } from 'react-router-dom';
+import emailjs from '@emailjs/browser';
+import { useState } from 'react';
 
-const { TextArea } = Input
+const ContentHeader = ({ Icon, title }: { Icon: React.ReactNode; title: string }) => (
+	<div className='flex items-center h-10 gap-4'>
+		<div className='h-full aspect-square rounded-full bg-secondary-bg-2 text-white text-2xl grid place-items-center'>
+			{Icon}
+		</div>
+		<h3 className='text-base font-medium'>{title}</h3>
+	</div>
+);
 
-const Contact: React.FC = () => {
-	const [leftRef, leftInView] = useInView({ triggerOnce: true, threshold: 0.2 })
-	const [rightRef, rightInView] = useInView({ triggerOnce: true, threshold: 0.2 })
+export default function ContactPage() {
+	const col1ClassName = 'col-span-1 mb-0! h-16 flex-3/12';
+	const contactItemClassName = 'text-base font-normal text-black!';
+	const [loading, setLoading] = useState(false);
+	const [formProps] = useForm();
+	const [api, contextHolder] = notification.useNotification(); // ✅ Dùng đúng API của Antd
 
-	const fadeIn = {
-		hidden: { opacity: 0, y: 20 },
-		visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-	}
-
-	const staggerContainer = {
-		hidden: { opacity: 1 },
-		visible: {
-			opacity: 1,
-			transition: {
-				staggerChildren: 0.1,
-			},
-		},
-	}
-
-	const handleSendMessage = () => {
-		notification.info({
-			message: 'Sending Message...',
-			description: 'Please wait while we process your request.',
-			duration: 2,
-		});
-
-		setTimeout(() => {
-			notification.success({
-				message: 'Success',
-				description: 'Your message has been sent successfully! We will get back to you soon.',
-				duration: 3,
-			});
-		}, 2000);
+	const handleSendMessage = (values: any) => {
+		setLoading(true);
+		emailjs
+			.send(
+				import.meta.env.VITE_CONTACT_EMAIL_SERVICE,
+				import.meta.env.VITE_CONTACT_EMAIL_TEMPLATE,
+				{
+					...values,
+					reply_to: values.email,
+					to_email: 'hahaiviet24112003@gmail.com',
+				},
+				import.meta.env.VITE_CONTACT_EMAIL_PUBLIC_KEY,
+			)
+			.then(res => {
+				if (res.status === 200) {
+					api.success({
+						message: 'Gửi thành công',
+						description: 'Cảm ơn bạn đã liên hệ!',
+					});
+					formProps.resetFields();
+				} else {
+					api.error({
+						message: 'Thất bại',
+						description: 'Không thể gửi tin nhắn. Vui lòng thử lại.',
+					});
+				}
+			})
+			.catch(error => {
+				console.log(error);
+				api.error({
+					message: 'Lỗi',
+					description: 'Không gửi được tin nhắn: ' + error.message,
+				});
+			})
+			.finally(() => setLoading(false));
 	};
 
 	return (
-		<div>
-			<div className='mt-8'>
-				<Breadcrumbs />
-			</div>
-			<section className='py-6 bg-white'>
-				<div className='px-app'>
-					<div className='flex flex-col md:flex-row gap-6'>
-						{/* LEFT COLUMN */}
-						<motion.div
-							ref={leftRef}
-							initial='hidden'
-							animate={leftInView ? 'visible' : 'hidden'}
-							variants={staggerContainer}
-							className='w-full md:w-1/3'
-						>
-							<motion.div variants={fadeIn} className='bg-white shadow-md px-6 py-12 rounded-md border h-full flex flex-col justify-between'>
-								{/* Call Section */}
-								<div className='flex flex-col h-full justify-between'>
-									<motion.div variants={fadeIn} className='flex items-center gap-4 mb-4'>
-										<div className='text-white bg-button-2-bg p-2 rounded-4xl'>
-											<PhoneOutlined style={{ fontSize: 25 }} />
-										</div>
-										<h3 className='font-semibold text-lg'>Call To Us</h3>
-									</motion.div>
-									<motion.a
-										href='tel:+8801611112222'
-										className='text-sm text-text-2 mt-1 font-bold hover:underline'
-										variants={fadeIn}
-									>
-										Phone: +8801611112222
-									</motion.a>
-								</div>
-
-								<hr className='mt-6' />
-
-								{/* Write Section */}
-								<motion.div variants={fadeIn}>
-									<div className='flex items-center gap-4 my-6'>
-										<div className='text-white bg-secondary-bg-2 p-2 rounded-4xl'>
-											<MailOutlined style={{ fontSize: 25 }} />
-										</div>
-										<h3 className='font-semibold text-lg'>Write To Us</h3>
-									</div>
-									<p className='text-sm text-text-2 font-bold'>
+		<div className='mx-app'>
+			{contextHolder} {/* ✅ BẮT BUỘC để hiện toast */}
+			<Spin spinning={loading}>
+				<div className='mt-20'>
+					<Breadcrumb items={[{ title: <Link to='/'>Home</Link> }, { title: 'Contact' }]} />
+				</div>
+				<Flex gap={30} className='h-96'>
+					<Card className='flex-3/12 py-10 shadow-md animate-to-right'>
+						<div className='flex flex-col gap-8'>
+							<div>
+								<ContentHeader Icon={<PhoneOutlined />} title='Call To Us' />
+								<a href='tel:0123456789' className={contactItemClassName}>
+									Phone: +84 123 456 789
+								</a>
+							</div>
+							<hr className='h-px bg-black w-full' />
+							<div>
+								<ContentHeader Icon={<MailOutlined />} title='Write To Us' />
+								<div className='flex flex-col gap-4'>
+									<p className={contactItemClassName}>
 										Fill out our form and we will contact you within 24 hours.
 									</p>
-									<p className='text-sm text-text-2 mt-1 font-bold'>
-										Emails:{' '}
-										<a href='mailto:customer@exclusive.com' className='hover:underline'>
-											customer@exclusive.com
-										</a>
-									</p>
-									<p className='text-sm text-text-2 font-bold'>
-										<a href='mailto:support@exclusive.com' className='hover:underline'>
-											support@exclusive.com
-										</a>
-									</p>
-								</motion.div>
-							</motion.div>
-						</motion.div>
-
-						{/* RIGHT COLUMN */}
-						<motion.div
-							ref={rightRef}
-							initial='hidden'
-							animate={rightInView ? 'visible' : 'hidden'}
-							variants={staggerContainer}
-							className='w-full md:w-2/3'
-						>
-							<motion.div variants={fadeIn} className='bg-white shadow-md p-6 rounded-md border h-full min-h-[460px] flex flex-col justify-between'>
-								<motion.div variants={staggerContainer} className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-									<motion.div variants={fadeIn}>
-										<Input
-											placeholder='Your Name *'
-											className='!bg-secondary-bg !border-none !focus:bg-white !focus:shadow-md !text-primary-text'
-										/>
-									</motion.div>
-									<motion.div variants={fadeIn}>
-										<Input
-											placeholder='Your Email *'
-											className='!bg-secondary-bg border-none focus:bg-white focus:shadow-md'
-										/>
-									</motion.div>
-									<motion.div variants={fadeIn}>
-										<Input
-											placeholder='Your Phone *'
-											className='!bg-secondary-bg border-none focus:bg-white focus:shadow-md'
-										/>
-									</motion.div>
-								</motion.div>
-								<motion.div variants={fadeIn} className='mt-4'>
-									<TextArea
-										placeholder='Your Message'
-										rows={10}
-										className='resize-none !bg-secondary-bg !border-none !focus:bg-white !focus:shadow-md'
-									/>
-								</motion.div>
-								<motion.div variants={fadeIn} className='mt-4 text-right'>
-									<Button
-										type='primary'
-										danger
-										className='px-8 py-2 !bg-button-2-bg hover:scale-105 transition-transform duration-300'
-										onClick={handleSendMessage}
-									>
-										Send Message
-									</Button>
-								</motion.div>
-							</motion.div>
-						</motion.div>
-					</div>
-				</div>
-			</section>
+									<a href='mailto:test@example.com' className={contactItemClassName}>
+										Email: test@example.com
+									</a>
+									<a href='mailto:test@example.com' className={contactItemClassName}>
+										Email: test@example.com
+									</a>
+								</div>
+							</div>
+						</div>
+					</Card>
+					<Card className='flex-9/12 shadow-md animate-to-left' styles={{ body: { height: '100%' } }}>
+						<div className='flex flex-col h-full gap-8'>
+							<Form
+								form={formProps}
+								className='flex flex-col gap-8 flex-1 mb-8'
+								onFinish={handleSendMessage}
+								initialValues={{ name: '', email: '', phone: '', message: '' }}
+								layout='vertical'>
+								<div className='flex gap-x-4 gap-y-8 flex-wrap w-full h-fit'>
+									<Form.Item
+										className={col1ClassName}
+										label='Name'
+										name='name'
+										rules={[{ required: true, message: 'Please input your name!' }]}>
+										<Input />
+									</Form.Item>
+									<Form.Item
+										className={col1ClassName}
+										label='Your Email'
+										name='email'
+										rules={[
+											{ required: true, message: 'Please input your email!' },
+											{ type: 'email', message: 'Please input a valid email!' },
+										]}>
+										<Input type='email' />
+									</Form.Item>
+									<Form.Item
+										className={col1ClassName}
+										label='Your Phone'
+										name='phone'
+										rules={[{ required: true, message: 'Please input your phone number!' }]}>
+										<Input type='tel' />
+									</Form.Item>
+								</div>
+								<div className='flex-1 contact-message'>
+									<Form.Item
+										className='col-span-3 flex-12/12 '
+										label='Message'
+										name='message'
+										style={{ height: '100%' }}
+										rules={[{ required: true, message: 'Please input your message!' }]}>
+										<TextArea placeholder='Message' rootClassName='flex-1' className='resize-none! h-full' />
+									</Form.Item>
+								</div>
+								<Button type='primary' htmlType='submit' className='text-base w-fit self-end leading-6 px-12! py-4!'>
+									Send Message
+								</Button>
+							</Form>
+						</div>
+					</Card>
+				</Flex>
+			</Spin>
 		</div>
-	)
+	);
 }
-
-export default Contact

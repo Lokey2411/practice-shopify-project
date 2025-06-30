@@ -1,11 +1,17 @@
+import { GlobalApiContextProvider } from './context/ApiContext'
+import { NotificationContextProvider } from './context/NotificationContex'
 import AppRouter from './routes'
 import { ConfigProvider as AntDesignProvider } from 'antd'
 
 function App() {
 	return (
-		<AntDesignProvider>
-			<AppRouter />
-		</AntDesignProvider>
+		<GlobalApiContextProvider>
+			<NotificationContextProvider>
+				<AntDesignProvider>
+					<AppRouter />
+				</AntDesignProvider>
+			</NotificationContextProvider>
+		</GlobalApiContextProvider>
 	)
 }
 

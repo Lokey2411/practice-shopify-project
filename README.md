@@ -172,17 +172,6 @@
 	-   Self-test bằng postman trước khi chốt api với front-end
 		
 
-	# Nhiệm vụ của từng người
-
-	BE: Tú, Việt
-
-	FE:
-
-	Landing page: Đức, Hiếu
-
-	Admin: Việt Anh
-
-	# Các tài liệu liên quan
 
 	[Figma](https://www.figma.com/design/5zAH0vRrYAiRckduqCVPl9/Full-E-Commerce-Website-UI-UX-Design-(Community)?node-id=1-3&p=f&t=aMGTPENnHKECNO3Z-0)
 

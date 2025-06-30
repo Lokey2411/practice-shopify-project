@@ -7,6 +7,7 @@ export interface IProduct {
 	categories: ICategory[];
 	images: string[];
 	price: number;
+	oldPrice?: number;
 	isDeleted: boolean;
 	createdAt: string;
 	updatedAt: string;

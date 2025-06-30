@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @config "../../../tailwind.config.ts";
+@import './order-management.css';
+
 @font-face {
 	font-family: 'Inter';
 	src: url('../fonts/Inter/Inter-VariableFont_opsz\,wght.ttf') format('truetype');
@@ -8,6 +10,7 @@
 	font-style: normal;
 	unicode-range: U+0000-5FFF, U+E000-FFFF;
 }
+
 @font-face {
 	font-family: 'Poppins';
 	src: url('../fonts/Poppins/Poppins-Regular.ttf') format('truetype');
@@ -18,8 +21,7 @@
 }
 
 @layer base {
-	body {
-	}
+	body {}
 }
 
 body {

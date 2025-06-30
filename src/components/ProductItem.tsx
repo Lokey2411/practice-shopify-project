@@ -5,6 +5,7 @@ import { IProduct } from '@/types/IProduct'
 import { Link } from 'react-router-dom'
 import Http from '@/services/Api'
 import moment from 'moment'
+import { useApi } from '@/context/ApiContext'
 
 const iconClassName = 'bg-white rounded-full shadow-md hover:bg-gray-100 size-7 cursor-pointer grid place-items-center'
 
@@ -19,6 +20,7 @@ const ProductItem: React.FC<IProduct> = ({
 	numPage
 }) => {
 	const [api, contextHolder] = notification.useNotification();
+	const { refetchCart, refetchWishlist } = useApi();
 	const key = `add-to-cart-${_id}`;
 
 	const addToCart = async (e: React.MouseEvent) => {
@@ -30,7 +32,6 @@ const ProductItem: React.FC<IProduct> = ({
 				description: `Thêm ${name} vào giỏ hàng của bạn.`,
 			});
 
-
 			const res = await Http.post('/carts', {
 				products: [{ productId: _id, quantity: 1 }],
 				price,
@@ -40,6 +41,8 @@ const ProductItem: React.FC<IProduct> = ({
 			if (res.status !== 200) {
 				throw new Error('Lỗi khi thêm vào giỏ hàng ');
 			}
+
+			await refetchCart();
 
 			api.open({
 				key,
@@ -58,6 +61,7 @@ const ProductItem: React.FC<IProduct> = ({
 		e.preventDefault();
 		try {
 			await Http.post('/favorites', { productId: _id });
+			await refetchWishlist();
 			api.success({
 				message: 'Đã thêm vào yêu thích ❤️',
 				description: `Sản phẩm "${name}" đã được thêm vào danh sách yêu thích.`,
@@ -102,7 +106,7 @@ const ProductItem: React.FC<IProduct> = ({
 					</div>
 
 					<div className="mt-3 flex justify-between items-center">
-						<span className="text-lg font-bold text-red-600">{price.toLocaleString()}₫</span>
+						<span className="text-lg font-bold text-red-600">{(Number(price) || 0).toLocaleString()}₫</span>
 						<Button
 							onClick={addToCart}
 							className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded"
