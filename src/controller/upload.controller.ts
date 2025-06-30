@@ -58,3 +58,20 @@ export const uploadFile = async (req: any, res: any) => {
 		res.status(500).json({ message: 'Lỗi server', error: err.message })
 	}
 }
+
+export const getImage = async (req: any, res: any) => {
+	try {
+		const gfs = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+			bucketName: 'uploads',
+		});
+		const fileName = req.params.filename;
+		const files = await gfs.find({ filename: fileName }).toArray();
+		if (!files || files.length === 0) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+		res.set('Content-Type', files[0].contentType);
+		gfs.openDownloadStreamByName(fileName).pipe(res);
+	} catch (err: any) {
+		res.status(500).json({ message: 'Lỗi server', error: err.message });
+	}
+};

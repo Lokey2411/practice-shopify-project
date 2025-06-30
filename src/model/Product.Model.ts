@@ -4,13 +4,14 @@ export interface IProduct extends Document {
 	name: string
 	categories: mongoose.Types.ObjectId[]
 	images: string[]
-	price: string
+	price: number
 	description: string
 	isDeleted: boolean
 	author: string
 	publisher: string
 	publishedDate: string
 	numPage: number
+	stock: number
 }
 
 const ProductSchema: Schema = new Schema(
@@ -18,13 +19,14 @@ const ProductSchema: Schema = new Schema(
 		name: { type: String, required: true },
 		categories: [{ type: Schema.Types.ObjectId, ref: 'Category', required: true }],
 		images: [{ type: String, required: true }],
-		price: { type: String, required: true },
+		price: { type: Number, required: true },
 		author: { type: String, required: true },
 		publisher: { type: String, required: true },
 		publishedDate: { type: String, required: true },
 		numPage: { type: Number, required: true },
 		description: { type: String },
 		isDeleted: { type: Boolean, default: false },
+		stock: { type: Number, required: true, default: 0 },
 	},
 	{ timestamps: true },
 )

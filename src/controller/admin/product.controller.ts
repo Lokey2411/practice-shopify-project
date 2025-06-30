@@ -50,11 +50,14 @@ export const updateProduct = async (req: Request<ProductParams>, res: Response) 
 	try {
 		const product = await Product.findOneAndUpdate({ _id: id, isDeleted: false }, req.body, { new: true })
 		if (!product) {
-			return res.status(STATUS.NOT_FOUND).json('Không tìm thấy sản phẩm')
+			res.status(STATUS.NOT_FOUND).json('Không tìm thấy sản phẩm')
+			return;
 		}
-		return res.json('Sản phẩm được cập nhật thành công')
+		res.json('Sản phẩm được cập nhật thành công');
+
 	} catch (error) {
-		return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi cập nhật sản phẩm: ${(error as Error).message}`)
+		res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi cập nhật sản phẩm: ${(error as Error).message}`)
+		return
 	}
 }
 
@@ -94,7 +97,9 @@ export const getAllProducts = async (req: Request, res: Response) => {
 		const filter = applyFilter<ProductDocument>(filterQuery, ['name', 'price', 'categories'])
 		const sort = applySort({ sortBy, sortOrder }, ['name', 'price', 'createdAt'])
 		const products = await Product.find(filter).populate('categories').sort(sort)
-		return res.json({ message: 'Lấy danh sách sản phẩm thành công', data: products })
+		const totalStock = products.reduce((sum, p) => sum + (p.stock || 0), 0)
+		const totalCount = await Product.countDocuments(filter)
+		return res.json({ message: 'Lấy danh sách sản phẩm thành công', data: products, totalStock, totalCount })
 	} catch (error) {
 		return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi lấy danh sách sản phẩm: ${(error as Error).message}`)
 	}
@@ -136,3 +141,58 @@ export const getProductsByCategory = async (req: Request<ProductParams>, res: Re
 		return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi lấy sản phẩm: ${(error as Error).message}`)
 	}
 }
+
+/**
+ * Lấy danh sách ảnh của sản phẩm
+ * @requires id - ID của sản phẩm (bắt buộc trong params)
+ */
+export const getProductImages = async (req: Request<ProductParams>, res: Response) => {
+	const { id } = req.params;
+	try {
+		const product = await Product.findById(id, 'images');
+		if (!product) {
+			return res.status(STATUS.NOT_FOUND).json('Không tìm thấy sản phẩm');
+		}
+		// Nếu images là mảng string hoặc object
+		return res.json(product.images || []);
+	} catch (error) {
+		return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi lấy ảnh sản phẩm: ${(error as Error).message}`);
+	}
+};
+
+export const updateProductImage = async (req, res) => {
+	const { id, imageIndex } = req.params;
+	const { imageUrl } = req.body;
+	if (!imageUrl) return res.status(400).json('Thiếu imageUrl');
+	try {
+		const product = await Product.findById(id);
+		if (!product) return res.status(404).json('Không tìm thấy sản phẩm');
+		const idx = parseInt(imageIndex, 10);
+		if (isNaN(idx) || idx < 0 || idx >= product.images.length) {
+			return res.status(400).json('Chỉ số ảnh không hợp lệ');
+		}
+		product.images[idx] = imageUrl;
+		await product.save();
+		return res.json(product.images);
+	} catch (error) {
+		return res.status(500).json(error.message);
+	}
+};
+
+export const recommendProducts = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const product = await Product.findById(id);
+		if (!product) return res.status(404).json({ message: "Product not found" });
+
+		// Gợi ý sản phẩm cùng danh mục (ít nhất 1 category trùng), loại trừ chính nó
+		const related = await Product.find({
+			categories: { $in: product.categories },
+			_id: { $ne: product._id }
+		}).limit(6);
+
+		res.json(related);
+	} catch (error) {
+		res.status(500).json({ message: "Error recommending products", error });
+	}
+};

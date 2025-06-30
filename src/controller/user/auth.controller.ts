@@ -18,13 +18,13 @@ export const userLogin = async (req: Request, res: Response) => {
 	}
 
 	try {
-		let user = await User.findOne({ email, isDeleted: false })
+		const user = await User.findOne({ $or: [{ email }, { username }], isDeleted: false })
 		if (!user) {
-			user = await User.findOne({ username, isDeleted: false })
-			if (!user) return res.status(STATUS.UNAUTHORIZED).json('Thông tin đăng nhập không hợp lệ')
+			console.log(user);
+			return res.status(STATUS.UNAUTHORIZED).json('Thông tin đăng nhập không hợp lệ')
 		}
-
 		const isMatch = await comparePassword(password, user.password)
+		console.log(isMatch)
 		if (!isMatch) {
 			return res.status(STATUS.UNAUTHORIZED).json('Thông tin đăng nhập không hợp lệ')
 		}

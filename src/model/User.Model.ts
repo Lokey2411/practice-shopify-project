@@ -9,6 +9,9 @@ export interface IUser extends Document {
 	displayName: string
 	permission: string[]
 	isDeleted: boolean
+	lastName: string
+	firstName: string
+	avatar: string
 }
 
 const UserSchema: Schema = new Schema(
@@ -21,6 +24,9 @@ const UserSchema: Schema = new Schema(
 		displayName: { type: String },
 		permission: { type: [String], default: ['user'] },
 		isDeleted: { type: Boolean, default: false },
+		lastName: { type: String, default: '' },
+		firstName: { type: String, default: '' },
+		avatar: { type: String, default: '' },
 	},
 	{ timestamps: true },
 )

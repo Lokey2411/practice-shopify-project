@@ -21,20 +21,21 @@ export const addToCart = async (req: Request, res: Response) => {
 	const { userId } = (req as any).user
 	const { products, price, address } = req.body
 
-	if (!products || !price || address === undefined || address === null) {
-		return res.status(STATUS.BAD_REQUEST).json('Sản phẩm, giá và địa chỉ là bắt buộc')
+	const totalPrice = Number(price);
+	if (!products || isNaN(totalPrice) || address === undefined || address === null) {
+		return res.status(STATUS.BAD_REQUEST).json('Sản phẩm, giá và địa chỉ là bắt buộc');
 	}
 
 	try {
 		let order = await Order.findOne({ userId, status: CART_STATUS, isDeleted: false })
 		if (order) {
 			order.products.push(...products)
-			order.price += +price.match(/\d+(?:\.\d+)?/g)[0]
+			order.price += totalPrice
 		} else
 			order = new Order({
 				userId,
 				products,
-				price: +price.match(/\d+(?:\.\d+)?/g)[0],
+				price: totalPrice,
 				address,
 				status: CART_STATUS,
 			})

@@ -9,6 +9,8 @@ export interface IOrder extends Document {
 	isDeleted: boolean
 	createdAt: Date
 	updatedAt: Date
+	province: String
+	district: String
 }
 
 const OrderSchema: Schema = new Schema(
@@ -28,6 +30,8 @@ const OrderSchema: Schema = new Schema(
 		},
 		address: { type: String, trim: true },
 		isDeleted: { type: Boolean, default: false },
+		province: String,
+		district: String,
 	},
 	{ timestamps: true },
 )
