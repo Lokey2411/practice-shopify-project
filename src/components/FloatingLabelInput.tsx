@@ -18,6 +18,14 @@ const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({ label, name, cl
 		if (!props.value) setMovingPlaceholders(false)
 	}
 
+	// Add autocomplete attribute for password fields
+	const getAutocomplete = () => {
+		if (props.type === 'password') {
+			return name === 'password' ? 'current-password' : 'new-password'
+		}
+		return props.autoComplete || 'off'
+	}
+
 	return (
 		<div className='relative'>
 			<label
@@ -35,6 +43,7 @@ const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({ label, name, cl
 				onFocus={addMovingPlaceholders}
 				onBlur={removeMovingPlaceholders}
 				name={name}
+				autoComplete={getAutocomplete()}
 				{...props}
 			/>
 		</div>

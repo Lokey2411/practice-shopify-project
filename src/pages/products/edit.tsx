@@ -1,20 +1,18 @@
 import { MAX_PRODUCT_IMAGE_COUNT } from '@/commons/constants';
+import BooleanField from '@/components/BooleanField';
 import DeleteButton from '@/components/DeleteButton';
-import { DoubleRightOutlined, FileImageOutlined } from '@ant-design/icons';
+import { DoubleRightOutlined, EditOutlined } from '@ant-design/icons';
 import { CreateButton, Edit, EditButton, useForm, useSelect } from '@refinedev/antd';
 import { BaseRecord } from '@refinedev/core';
 import { axiosInstance } from '@refinedev/simple-rest';
-import { Button, Col, Flex, Form, Image, Input, InputNumber, Modal, ModalProps, Row, Select, Space, Table } from 'antd';
+import { Button, Flex, Form, Image, Input, InputNumber, Modal, Select, Space, Table, message, Upload } from 'antd';
 import FormItemLabel from 'antd/es/form/FormItemLabel';
 import TextArea from 'antd/es/input/TextArea';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { DatePicker } from 'antd';
-import Upload from '@/components/Upload';
-import dayjs from 'dayjs';
 
 export const ProductEdit = () => {
-	const { form, formProps, saveButtonProps } = useForm({});
+	const { formProps, saveButtonProps } = useForm({});
 	const [modal, setModal] = useState('');
 	const { selectProps } = useSelect({
 		resource: 'categories',
@@ -24,55 +22,32 @@ export const ProductEdit = () => {
 	});
 	const { id } = useParams();
 	const [variants, setVariants] = useState([]);
+	const [images, setImages] = useState<string[]>([]);
+	const [editingImageIndex, setEditingImageIndex] = useState<number | null>(null);
+	const [newImageUrl, setNewImageUrl] = useState('');
+	const [editImageUrl, setEditImageUrl] = useState('');
+	const [loadingImage, setLoadingImage] = useState(false);
 
-	// Lấy danh sách variants nếu cần (không động đến images nữa)
 	useEffect(() => {
 		axiosInstance.get('/services/api/products/' + id + '/variants').then(res => {
 			setVariants(res.data);
 		});
-	}, [id]);
+		axiosInstance.get('/services/api/products/' + id + '/images').then(res => {
+			setImages(res.data);
+		});
+	}, []);
 
-	// Đảm bảo publishedDate luôn là dayjs hoặc null
-	useEffect(() => {
-		if (formProps.form) {
-			let publishedDate = formProps.form.getFieldValue('publishedDate');
-			if (publishedDate && !dayjs.isDayjs(publishedDate)) {
-				if (typeof publishedDate === 'number') {
-					publishedDate = publishedDate.toString();
-				}
-				if (typeof publishedDate === 'string' || typeof publishedDate === 'number') {
-					formProps.form.setFieldsValue({
-						publishedDate: dayjs(publishedDate),
-					});
-				} else {
-					formProps.form.setFieldsValue({
-						publishedDate: null,
-					});
-				}
-			}
-			if (!publishedDate) {
-				formProps.form.setFieldsValue({
-					publishedDate: null,
-				});
-			}
-		}
-	}, [formProps.form, formProps.initialValues]);
-
-	// Custom onFinish to transform data before submit
-	const handleFinish = (values: any) => {
-		if (values.publishedDate && typeof values.publishedDate !== 'string') {
-			values.publishedDate = values.publishedDate.format('YYYY');
-		}
-		if (values.price && typeof values.price !== 'number') {
-			values.price = Number(values.price);
-		}
-		if (formProps.onFinish) {
-			return formProps.onFinish(values);
-		}
+	const fetchImages = () => {
+		axiosInstance.get('/services/api/products/' + id + '/images').then(res => {
+			setImages(res.data);
+		});
 	};
 
-	// Lấy ảnh từ trường images của sản phẩm
-	const images = formProps.form?.getFieldValue('images') || [];
+	const fetchVariants = () => {
+		axiosInstance.get('/services/api/products/' + id + '/variants').then(res => {
+			setVariants(res.data);
+		});
+	};
 
 	return (
 		<Edit
@@ -86,7 +61,7 @@ export const ProductEdit = () => {
 							onClick={() => {
 								setModal('image');
 							}}
-							icon={<FileImageOutlined />}>
+							icon={<EditOutlined />}>
 							Image
 						</Button>
 						<Button type="primary" onClick={() => setModal('variant')} icon={<DoubleRightOutlined />}>
@@ -95,16 +70,70 @@ export const ProductEdit = () => {
 					</>
 				);
 			}}>
-			<Modal open={modal === 'image'} onCancel={() => setModal('')} title="Image">
-				<div className="flex justify-end items-center my-2 gap-4">
-					<p className="text-md font-bold">
-						{images.length}/{MAX_PRODUCT_IMAGE_COUNT}
-					</p>
+			<Modal open={modal === 'image'} onCancel={() => { setModal(''); setEditingImageIndex(null); }} title="Image">
+				<div className="flex flex-col gap-4">
+					<div className="flex items-center gap-2">
+						<Input
+							placeholder="Nhập link ảnh mới"
+							value={newImageUrl}
+							onChange={e => setNewImageUrl(e.target.value)}
+							style={{ width: 300 }}
+						/>
+						<Button
+							type="primary"
+							loading={loadingImage}
+							onClick={async () => {
+								if (!newImageUrl) return message.warning('Vui lòng nhập link ảnh');
+								setLoadingImage(true);
+								try {
+									await axiosInstance.post('/services/api/products/' + id + '/images', { imageUrl: newImageUrl });
+									setNewImageUrl('');
+									fetchImages();
+									message.success('Thêm ảnh thành công');
+								} catch (err) {
+									message.error('Lỗi khi thêm ảnh');
+								} finally {
+									setLoadingImage(false);
+								}
+							}}
+						>Thêm ảnh</Button>
+					</div>
+					<Table
+						dataSource={images.map((img, idx) => ({ imageUrl: img, key: idx }))}
+						rowKey="key"
+						pagination={false}
+					>
+						<Table.Column dataIndex="key" title="#" render={idx => idx + 1} />
+						<Table.Column dataIndex="imageUrl" title="Image" render={url => <Image src={url} width={80} />} />
+						<Table.Column
+							title="Actions"
+							render={(_, record) => (
+								<Upload
+									showUploadList={false}
+									accept="image/*"
+									customRequest={async ({ file, onSuccess, onError }) => {
+										const formData = new FormData();
+										formData.append('image', file);
+										try {
+											const res = await axiosInstance.post('/services/api/upload', formData, {
+												headers: { 'Content-Type': 'multipart/form-data' },
+											});
+											await axiosInstance.put('/services/api/products/' + id + '/images/' + record.key, { imageUrl: res.data.imageUrl });
+											fetchImages();
+											onSuccess && onSuccess({}, file);
+											message.success('Thay ảnh thành công');
+										} catch (err) {
+											onError && onError(err as any);
+											message.error('Lỗi khi thay ảnh');
+										}
+									}}
+								>
+									<Button size="small">Thay ảnh</Button>
+								</Upload>
+							)}
+						/>
+					</Table>
 				</div>
-				<Table dataSource={images.map((url, idx) => ({ id: idx + 1, imageUrl: url }))} rowKey="id" pagination={false}>
-					<Table.Column dataIndex="id" title="Id" />
-					<Table.Column dataIndex="imageUrl" title="imageUrl" render={url => <Image src={url} preview={false} />} />
-				</Table>
 			</Modal>
 			<Modal open={modal === 'variant'} onCancel={() => setModal('')} title="Variant">
 				<div className="flex justify-end mt-2">
@@ -130,64 +159,115 @@ export const ProductEdit = () => {
 									recordItemId={record.id}
 									href={'/products/' + id + '/variants/edit/' + record.id}
 								/>
-								<DeleteButton id={record.id!} />
+								<DeleteButton id={record.id!} afterDelete={fetchVariants} />
 							</Space>
 						)}
 					/>
 				</Table>
 			</Modal>
-			<Form {...formProps} form={form} layout="vertical" onFinish={handleFinish}>
-				<Row gutter={16}>
-					<Col xs={24} md={12}>
-						<Form.Item label="Tên sách" name={['name']} rules={[{ required: true, message: 'Vui lòng nhập tên sách!' }]}>
-							<Input />
-						</Form.Item>
-					</Col>
-					<Col xs={24} md={12}>
-						<Form.Item label="Tác giả" name={['author']} rules={[{ required: true, message: 'Vui lòng nhập tác giả!' }]}>
-							<Input />
-						</Form.Item>
-					</Col>
-				</Row>
-				<Row gutter={16}>
-					<Col xs={24} md={12}>
-						<Form.Item label="Nhà xuất bản" name={['publisher']} rules={[{ required: true, message: 'Vui lòng nhập nhà xuất bản!' }]}>
-							<Input />
-						</Form.Item>
-					</Col>
-					<Col xs={24} md={12}>
-						<Form.Item label="Năm xuất bản" name={['publishedDate']} rules={[{ required: true, message: 'Vui lòng chọn năm xuất bản!' }]}>
-							<DatePicker picker='year' format={'YYYY'} className='w-full' />
-						</Form.Item>
-					</Col>
-				</Row>
-				<Row gutter={16}>
-					<Col xs={24} md={12}>
-						<Form.Item label="Số trang" name={['numPage']} rules={[{ required: true, message: 'Vui lòng nhập số trang!' }]}>
-							<InputNumber className='w-full' />
-						</Form.Item>
-					</Col>
-					<Col xs={24} md={12}>
-						<Form.Item label="Giá" name={['price']} rules={[{ required: true, message: 'Vui lòng nhập giá!' }]}>
-							<InputNumber className='w-full' min={0} />
-						</Form.Item>
-					</Col>
-				</Row>
-				<Form.Item label="Mô tả" name={['description']}>
-					<TextArea rows={3} />
+			<Form {...formProps} layout="vertical">
+				<Form.Item
+					label="Tên tác phẩm"
+					name={['name']}
+					rules={[
+						{ required: true, message: "Please enter book name" },
+					]}>
+					<Input />
 				</Form.Item>
-				<Form.Item label="Danh mục" name={['category_id']} rules={[{ required: true, message: 'Vui lòng chọn danh mục!' }]}>
-					<Select {...selectProps} placeholder='Chọn danh mục' />
+				<Form.Item
+					label="Tác giả"
+					name={['author']}
+					rules={[
+						{ required: true, message: "Please enter author" },
+					]}>
+					<Input />
 				</Form.Item>
-				<Form.Item label="Ảnh sản phẩm" name={['images']}>
-					<Upload form={formProps.form} onUploadSuccess={() => { }} />
+				<Form.Item
+					label="Nhà xuất bản"
+					name={['publisher']}
+					rules={[
+						{ required: true, message: "Please enter publisher" },
+					]}>
+					<Input />
+				</Form.Item>
+				<Form.Item
+					label="Description"
+					name={['description']}
+					rules={[
+						{
+							required: false,
+						},
+					]}>
+					<TextArea />
+				</Form.Item>
+				<Flex gap={8} align="center">
+					<FormItemLabel label="Price" prefixCls="" />
+					<Form.Item name={['price']} style={{ marginBottom: 0, marginTop: 4 }}>
+						<Input style={{ width: 100 }} />
+					</Form.Item>
+				</Flex>
+				<Form.Item label="Category" name={['category_id']}>
+					<select className="w-full rounded-lg border-blue-300">
+						{selectProps.options?.map(opt => (
+							<option key={opt.value} value={opt.value ?? ''}>
+								{opt.label}
+							</option>
+						))}
+					</select>
 				</Form.Item>
 				<Flex gap={8} align="center">
 					<FormItemLabel label="Best sale" prefixCls="" />
-					<Form.Item label="" name={['isBestSale']} style={{ marginBottom: 0, marginTop: 4 }} valuePropName="checked">
+					<Form.Item
+						label=""
+						name={['isBestSale']}
+						style={{
+							marginBottom: 0,
+							marginTop: 4,
+						}}
+						valuePropName="checked">
 						<Input type="checkbox" />
 					</Form.Item>
 				</Flex>
+				<Form.Item label="Images">
+					<Upload
+						listType="picture-card"
+						fileList={images.map((url, idx) => ({
+							uid: String(idx),
+							name: `image-${idx}`,
+							status: 'done',
+							url,
+						}))}
+						customRequest={async ({ file, onSuccess, onError }) => {
+							const formData = new FormData();
+							formData.append('image', file);
+							try {
+								const res = await axiosInstance.post('/services/api/upload', formData, {
+									headers: { 'Content-Type': 'multipart/form-data' },
+								});
+								await axiosInstance.post('/services/api/products/' + id + '/images', { imageUrl: res.data.imageUrl });
+								fetchImages();
+								onSuccess && onSuccess({}, file);
+								message.success('Thêm ảnh thành công');
+							} catch (err) {
+								onError && onError(err as any);
+								message.error('Lỗi khi upload ảnh');
+							}
+						}}
+						onRemove={async (file) => {
+							const idx = images.findIndex(url => url === file.url);
+							if (idx > -1) {
+								await axiosInstance.delete('/services/api/products/' + id + '/images/' + idx);
+								fetchImages();
+								message.success('Xóa ảnh thành công');
+							}
+						}}
+						showUploadList={{ showRemoveIcon: true }}
+						accept="image/*"
+						multiple
+					>
+						{images.length < MAX_PRODUCT_IMAGE_COUNT && '+ Thêm ảnh'}
+					</Upload>
+				</Form.Item>
 			</Form>
 		</Edit>
 	);

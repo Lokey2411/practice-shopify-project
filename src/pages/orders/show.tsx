@@ -117,6 +117,17 @@ export const OrderShow = () => {
                                 return `${(price * qty).toLocaleString()}₫`;
                             }}
                         />
+                        <Table.Column
+                            dataIndex='address'
+                            title="Địa chỉ"
+                            render={(_, record) => (
+                                <span>
+                                    {record.province && `${record.province}, `}
+                                    {record.district && `${record.district}, `}
+                                    {record.address}
+                                </span>
+                            )}
+                        />
                     </Table>
                 </div>
             </div>

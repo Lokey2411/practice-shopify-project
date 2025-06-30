@@ -3,7 +3,7 @@ import { AuthProvider, AuthActionResponse } from '@refinedev/core'
 export const authProvider: AuthProvider = {
 	login: async ({ username, password }: any): Promise<AuthActionResponse> => {
 		try {
-			const response = await fetch('/services/api/login', {
+			const response = await fetch('/services/api/users/admin/login', {
 				method: 'POST',
 				body: JSON.stringify({ username, password }),
 				headers: {
@@ -39,7 +39,7 @@ export const authProvider: AuthProvider = {
 		const token = localStorage.getItem('token')
 		if (token) {
 			try {
-				const response = await fetch('/services/api/whoami', {
+				const response = await fetch('/services/api/users/admin/token', {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},

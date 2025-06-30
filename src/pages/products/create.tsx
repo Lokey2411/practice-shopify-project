@@ -1,40 +1,12 @@
 import Upload from '@/components/Upload'
 import { Create, useForm, useSelect } from '@refinedev/antd'
-import { DatePicker, Form, Input, InputNumber, Select } from 'antd'
-import { useEffect, useState } from 'react'
-import dayjs from 'dayjs'
-import { useParams } from 'react-router'
-import { axiosInstance } from '@refinedev/simple-rest'
+import { DatePicker, Form, Input, InputNumber, Button } from 'antd'
+import { useState } from 'react'
 
 export const ProductCreate = () => {
-	const { id } = useParams()
-	const [initialValues, setInitialValues] = useState<any>(null)
-
-	useEffect(() => {
-		axiosInstance.get('/services/api/products/' + id).then(res => {
-			const data = res.data?.data || res.data
-			let publishedDate = data.publishedDate
-			if (publishedDate && !dayjs.isDayjs(publishedDate)) {
-				if (typeof publishedDate === 'number') {
-					publishedDate = publishedDate.toString()
-				}
-				if (typeof publishedDate === 'string' || typeof publishedDate === 'number') {
-					publishedDate = dayjs(publishedDate)
-				} else {
-					publishedDate = null
-				}
-			}
-			if (!publishedDate) publishedDate = null
-			setInitialValues({ ...data, publishedDate })
-		})
-	}, [id])
-
-	const { formProps, saveButtonProps } = useForm({
-		initialValues,
-	})
+	const { formProps, saveButtonProps } = useForm({})
 	const [image, setImage] = useState('')
 
-	// Thêm hook lấy danh sách categories
 	const { selectProps: categorySelectProps } = useSelect({
 		resource: 'categories',
 		optionLabel: 'name',
@@ -46,19 +18,19 @@ export const ProductCreate = () => {
 		setImage(url)
 	}
 
-	const onFinish = (values) => {
-		// Đảm bảo price là số
-		values.price = Number(values.price);
-		// Đảm bảo publishedDate là string năm
-		if (typeof values.publishedDate !== 'string') {
-			values.publishedDate = values.publishedDate.format('YYYY');
-		}
-		// ...submit values
+	function formatCurrency(value: string | number | null | undefined) {
+		if (value == null || value === '') return '';
+		const number = Number(value);
+		if (isNaN(number)) return '';
+		return number.toLocaleString('vi-VN') + ' đ';
 	}
 
 	return (
 		<Create saveButtonProps={saveButtonProps}>
-			<Form {...formProps} layout='vertical'>
+			<Form
+				{...formProps}
+				layout='vertical'
+			>
 				<Form.Item
 					label={'Name'}
 					name={['name']}
@@ -70,29 +42,29 @@ export const ProductCreate = () => {
 					<Input />
 				</Form.Item>
 
-				{/* Thêm trường chọn danh mục */}
 				<Form.Item
-					label='Categories'
-					name={['categories']}
-					rules={[{ required: true, message: 'Please select at least one category' }]}
+					label="Categories"
+					name="categories"
+					rules={[{ required: true, message: "Please select at least one category" }]}
 				>
-					<Select
-						{...categorySelectProps}
-						mode='multiple' // Nếu chỉ chọn 1 thì bỏ dòng này
-						placeholder='Select categories'
-					/>
+					<select className="w-full rounded-lg border-blue-300">
+						{categorySelectProps.options?.map(opt => (
+							<option key={opt.value} value={opt.value ?? ''}>
+								{opt.label}
+							</option>
+						))}
+					</select>
 				</Form.Item>
 
 				<Form.Item
-					label={'Price'}
-					name={['price']}
-					rules={[{ required: true }]}
+					label="Price"
+					name="price"
+					rules={[{ required: true, message: "Please enter Price" }]}
 				>
 					<InputNumber
 						min={0}
 						style={{ width: '100%' }}
 						formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-						parser={value => value ? value.replace(/[^0-9]/g, '') : ''}
 					/>
 				</Form.Item>
 				<Form.Item label={'images'} name={['images']}>
@@ -146,6 +118,7 @@ export const ProductCreate = () => {
 					]}>
 					<InputNumber />
 				</Form.Item>
+				<Button htmlType="submit">Tạo sản phẩm</Button>
 			</Form>
 		</Create>
 	)

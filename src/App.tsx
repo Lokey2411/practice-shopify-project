@@ -13,6 +13,7 @@ import { resources } from './commons/resources'
 import { dataProvider } from './services/dataProvider'
 import AppRoute from './routes'
 import { authProvider } from './services/authProvider'
+import ChatAdmin from '@/pages/chat/ChatAdmin'
 
 function App() {
 	return (
@@ -28,7 +29,10 @@ function App() {
 									authProvider={authProvider}
 									notificationProvider={useNotificationProvider}
 									routerProvider={routerBindings}
-									resources={resources}
+									resources={[
+										...resources,
+										{ name: "chat", list: ChatAdmin, options: { label: "Chat" } },
+									]}
 									options={{
 										syncWithLocation: true,
 										warnWhenUnsavedChanges: true,

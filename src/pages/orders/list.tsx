@@ -20,11 +20,11 @@ export const OrderList = () => {
     }
     const [filters, setFilters] = useState(defaultFilters)
 
-    const { tableProps } = useTable({
+    const { tableProps, tableQueryResult } = useTable({
         syncWithLocation: false,
         liveMode: 'auto',
     })
-    const refetchOrders = tableProps.refetch || tableProps.onSearch;
+    const refetchOrders = tableQueryResult?.refetch;
 
     const { dataSource: tableDataSource } = tableProps
 

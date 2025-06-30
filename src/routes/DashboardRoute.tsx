@@ -8,6 +8,7 @@ import { Header } from '@/components'
 import { ProductCreate, ProductEdit, ProductList, ProductShow } from '@/pages/products'
 import { SliderList, SliderCreate, SliderEdit, SliderShow } from '@/pages/sliders'
 import { OrderList, OrderShow } from '@/pages/orders'
+import ChatAdmin from '@/pages/chat/ChatAdmin'
 
 const DashboardRoute = () => {
 	return (
@@ -47,6 +48,7 @@ const DashboardRoute = () => {
 					<Route index element={<OrderList />} />
 					<Route path='show/:id' element={<OrderShow />} />
 				</Route>
+				<Route path='/chat' element={<ChatAdmin />} />
 
 				<Route path='*' element={<ErrorComponent />} />
 			</Route>

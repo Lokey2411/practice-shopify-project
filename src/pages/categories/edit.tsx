@@ -37,13 +37,13 @@ export const CategoryEdit = () => {
 					fileList={
 						formProps.initialValues?.image
 							? [
-									{
-										uid: '-1',
-										name: 'image',
-										status: 'done',
-										url: formProps.initialValues.image,
-									},
-							  ]
+								{
+									uid: '-1',
+									name: 'image',
+									status: 'done',
+									url: formProps.initialValues.image,
+								},
+							]
 							: []
 					}
 					onChange={e => {

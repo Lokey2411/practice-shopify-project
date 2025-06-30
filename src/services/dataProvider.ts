@@ -36,7 +36,7 @@ export const dataProvider: DataProvider = {
 
 		const res: any = response;
 		const dataArr = Array.isArray(res.data?.data) ? res.data.data : [];
-		const total = res.total ?? res.data?.total ?? res.data?.data?.total ?? 0;
+		const total = res.data?.totalCount ?? res.total ?? res.data?.total ?? res.data?.data?.total ?? 0;
 
 		return {
 			data: dataArr.map((item: any) => ({ ...item, id: item._id })),

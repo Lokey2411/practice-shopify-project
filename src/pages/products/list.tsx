@@ -1,9 +1,9 @@
 import { EditButton, List, ShowButton, useTable, useSelect } from '@refinedev/antd'
 import type { BaseRecord } from '@refinedev/core'
-import { Space, Table, Tag, Tooltip, Input, Select, Row, Col } from 'antd'
+import { Space, Table, Tag, Tooltip, Input, Select, Row, Col, Form } from 'antd'
 import { EditOutlined, EyeOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
 import DeleteButton from '@/components/DeleteButton'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export const ProductList = () => {
 	const { tableProps, searchFormProps } = useTable({
@@ -25,33 +25,54 @@ export const ProductList = () => {
 		optionValue: 'id',
 	})
 
+	// Lấy tổng tồn kho từ API
+	const totalStock = Array.isArray(tableProps?.dataSource) && tableProps.dataSource.length > 0 && tableProps.dataSource[0]?.totalStock !== undefined
+		? tableProps.dataSource[0].totalStock
+		: undefined;
+
+	// Lấy tổng số sản phẩm từ API
+	const totalCount = typeof (tableProps as any)?.pagination?.total === "number"
+		? (tableProps as any)?.pagination?.total
+		: 0;
+
 	return (
 		<div className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl shadow-2xl">
 			<List>
+				{/* Tổng tồn kho */}
+				{typeof totalStock === 'number' && (
+					<div className="mb-2 text-lg font-bold text-blue-700">
+						Tổng số lượng tồn kho: <span className="text-green-600">{totalStock}</span>
+					</div>
+				)}
+				{/* Tổng số sản phẩm */}
+				{typeof totalCount === 'number' && (
+					<div className="mb-4 text-lg font-bold text-blue-700">
+						Tổng số sản phẩm: <span className="text-pink-600">{totalCount}</span>
+					</div>
+				)}
 				{/* Filter & Search */}
 				<Row gutter={16} className="mb-4">
-					<Col xs={24} sm={12} md={8}>
-						<Input
-							allowClear
-							prefix={<SearchOutlined />}
-							placeholder="Tìm kiếm tên sách..."
-							onChange={e => searchFormProps?.form?.setFieldValue('name', e.target.value)}
-							onPressEnter={e => searchFormProps?.form?.submit()}
-							className="rounded-lg border-blue-300"
-						/>
-					</Col>
-					<Col xs={24} sm={12} md={8}>
-						<Select
-							{...selectProps}
-							allowClear
-							placeholder="Lọc theo danh mục"
-							onChange={value => {
-								searchFormProps?.form?.setFieldValue('category_id', value);
-								searchFormProps?.form?.submit();
-							}}
-							className="w-full rounded-lg border-blue-300"
-						/>
-					</Col>
+					<Form layout="inline" {...searchFormProps}>
+						<Form.Item name="name">
+							<Input
+								allowClear
+								prefix={<SearchOutlined />}
+								placeholder="Tìm kiếm tên sách..."
+								onPressEnter={() => searchFormProps.form?.submit()}
+								className="rounded-lg border-blue-300"
+							/>
+						</Form.Item>
+						<Form.Item name="category_id">
+							<Select
+								{...selectProps}
+								allowClear
+								placeholder="Lọc theo danh mục"
+								onChange={() => searchFormProps.form?.submit()}
+								className="w-full rounded-lg border-blue-300"
+								style={{ minWidth: 180 }}
+							/>
+						</Form.Item>
+					</Form>
 				</Row>
 				{/* Table */}
 				<div className='overflow-x-auto rounded-xl shadow-lg bg-white border border-blue-100'>
@@ -59,7 +80,7 @@ export const ProductList = () => {
 						{...tableProps}
 						rowKey='id'
 						bordered
-						pagination={{ pageSize: 10 }}
+						pagination={{ pageSize: 5 }}
 						className='custom-admin-table'
 						style={{ background: 'white', borderRadius: 16 }}
 						scroll={{ x: 900 }}
@@ -70,6 +91,7 @@ export const ProductList = () => {
 						<Table.Column dataIndex={'publisher'} title={<span className='text-blue-800 font-bold text-base tracking-wide'>Nhà XB</span>} />
 						<Table.Column dataIndex={'publishedDate'} title={<span className='text-blue-800 font-bold text-base tracking-wide'>Năm XB</span>} />
 						<Table.Column dataIndex={'numPage'} title={<span className='text-blue-800 font-bold text-base tracking-wide'>Số trang</span>} />
+						<Table.Column dataIndex={'stock'} title={<span className='text-blue-800 font-bold text-base tracking-wide'>Tồn kho</span>} render={stock => <Tag color={stock > 0 ? 'green' : 'red'} className='font-semibold text-base'>{stock}</Tag>} />
 						<Table.Column
 							title={<span className='text-blue-800 font-bold text-base tracking-wide'>Thao tác</span>}
 							dataIndex='actions'

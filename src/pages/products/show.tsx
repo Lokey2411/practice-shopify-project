@@ -70,6 +70,9 @@ export const ProductShow = () => {
 						<div>
 							<Text strong>ID:</Text> <Text copyable>{record?.id}</Text>
 						</div>
+						<div>
+							<Text strong>Tồn kho:</Text> <Text type={record?.stock === 0 ? 'danger' : undefined}>{record?.stock ?? '-'}</Text>
+						</div>
 					</div>
 				</div>
 			</div>
