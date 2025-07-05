@@ -15,7 +15,26 @@ const DashboardRoute = () => {
 		<Routes>
 			<Route
 				element={
-					<ThemedLayoutV2 Header={() => <Header />} Sider={props => <ThemedSiderV2 {...props} fixed />}>
+					<ThemedLayoutV2
+						Header={() => <Header />}
+						Sider={props => (
+							<ThemedSiderV2
+								{...props}
+								fixed
+								Title={() => (
+									<div style={{
+										fontWeight: 'bold',
+										fontSize: 18,
+										textAlign: 'center',
+										padding: 16,
+										color: '#1890ff'
+									}}>
+										📚 Quản lý cửa hàng sách
+									</div>
+								)}
+							/>
+						)}
+					>
 						<Outlet />
 					</ThemedLayoutV2>
 				}>

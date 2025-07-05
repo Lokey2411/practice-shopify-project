@@ -1,73 +1,48 @@
+import Upload from '@/components/Upload'
 import { Edit, useForm } from '@refinedev/antd'
-import { axiosInstance } from '@refinedev/simple-rest'
-import { Flex, Form, Input, Upload } from 'antd'
+import { useOne, useResourceParams } from '@refinedev/core'
+import { Flex, Form, Image, Input } from 'antd'
 import FormItemLabel from 'antd/es/form/FormItemLabel'
-import { useEffect, useState } from 'react'
+import TextArea from 'antd/es/input/TextArea'
+import { useParams } from 'react-router'
 
 export const CategoryEdit = () => {
+	const { id } = useParams<{ id: string }>()
+	const { resource } = useResourceParams()
 	const { formProps, saveButtonProps } = useForm({})
+	const { data: category } = useOne({
+		resource: resource?.name,
+		id,
+	})
 
-	const [imageUploaded, setImageUploaded] = useState(formProps.initialValues?.image ?? '')
+	const handleUploadSuccess = (url: string) => {
+		if (url) formProps.form?.setFieldValue('image', url)
+		console.log('Form image updated:', url)
+	}
 
-	// Đồng bộ imageUploaded với form
-	useEffect(() => {
-		formProps.form?.setFieldsValue({ image: imageUploaded })
-	}, [imageUploaded, formProps.form])
-	console.log(formProps.initialValues)
 	return (
 		<Edit saveButtonProps={saveButtonProps}>
 			<Form {...formProps} layout='vertical'>
 				<Form.Item label={'Name'} name={['name']} rules={[{ required: true }]}>
 					<Input />
 				</Form.Item>
+				<Form.Item label={'Description'} name={['description']} rules={[{ required: true }]}>
+					<TextArea />
+				</Form.Item>
 				<Flex gap={8} align='center'>
-					<FormItemLabel prefixCls='' label='Is New Arrival' />
-					<Form.Item className='mb-0' label='' name={['isNewArrival']} valuePropName='checked'>
+					<FormItemLabel label={'Is New Arrival'} prefixCls=''></FormItemLabel>
+					<Form.Item
+						label={''}
+						name={['isNewArrival']}
+						style={{ marginBottom: 0, marginTop: 4 }}
+						valuePropName='checked'>
 						<Input type='checkbox' />
 					</Form.Item>
 				</Flex>
-				<FormItemLabel prefixCls='' label='Image' />
-				<Upload
-					isImageUrl={file => true}
-					accept='image/*'
-					maxCount={1}
-					listType='picture'
-					style={{ width: '100%' }}
-					rootClassName='w-full'
-					fileList={
-						formProps.initialValues?.image
-							? [
-								{
-									uid: '-1',
-									name: 'image',
-									status: 'done',
-									url: formProps.initialValues.image,
-								},
-							]
-							: []
-					}
-					onChange={e => {
-						if (e.file.originFileObj) {
-							axiosInstance
-								.post(
-									'/services/api/upload',
-									{ image: e.file.originFileObj },
-									{
-										headers: {
-											'Content-Type': 'multipart/form-data',
-										},
-									},
-								)
-								.then(res => {
-									setImageUploaded(res.data.imageUrl)
-									formProps.form?.setFieldsValue({ image: res.data.imageUrl })
-								})
-						}
-					}}>
-					<div>Click or drag file to this area to upload</div>
-				</Upload>
-				<Form.Item label='' name={['image']} hidden>
-					<Input type='hidden' />
+				<Upload form={formProps.form} onUploadSuccess={handleUploadSuccess} />
+				{category?.data?.image && <Image src={category?.data.image} width={200} height={200} />}
+				<Form.Item label={'Image'} name={['image']}>
+					<Input />
 				</Form.Item>
 			</Form>
 		</Edit>

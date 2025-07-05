@@ -1,24 +1,24 @@
 import { MAX_PRODUCT_IMAGE_COUNT } from '@/commons/constants';
 import BooleanField from '@/components/BooleanField';
 import DeleteButton from '@/components/DeleteButton';
+import Select from '@/components/Select';
 import { DoubleRightOutlined, EditOutlined } from '@ant-design/icons';
 import { CreateButton, Edit, EditButton, useForm, useSelect } from '@refinedev/antd';
 import { BaseRecord } from '@refinedev/core';
 import { axiosInstance } from '@refinedev/simple-rest';
-import { Button, Flex, Form, Image, Input, InputNumber, Modal, Select, Space, Table, message, Upload } from 'antd';
+import { Button, Flex, Form, Image, Input, InputNumber, Modal, Space, Table, message, Upload } from 'antd';
 import FormItemLabel from 'antd/es/form/FormItemLabel';
 import TextArea from 'antd/es/input/TextArea';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
 export const ProductEdit = () => {
-	const { formProps, saveButtonProps } = useForm({});
+	const { formProps, saveButtonProps, queryResult } = useForm({});
 	const [modal, setModal] = useState('');
 	const { selectProps } = useSelect({
 		resource: 'categories',
 		optionLabel: 'name',
 		optionValue: 'id',
-		defaultValue: formProps?.form?.getFieldValue('category_id'),
 	});
 	const { id } = useParams();
 	const [variants, setVariants] = useState([]);
@@ -36,6 +36,14 @@ export const ProductEdit = () => {
 			setImages(res.data);
 		});
 	}, []);
+
+	useEffect(() => {
+		if (queryResult?.data?.data) {
+			formProps.form?.setFieldsValue({
+				category_id: String(queryResult.data.data.category_id),
+			});
+		}
+	}, [queryResult?.data?.data]);
 
 	const fetchImages = () => {
 		axiosInstance.get('/services/api/products/' + id + '/images').then(res => {
@@ -203,17 +211,26 @@ export const ProductEdit = () => {
 				<Flex gap={8} align="center">
 					<FormItemLabel label="Price" prefixCls="" />
 					<Form.Item name={['price']} style={{ marginBottom: 0, marginTop: 4 }}>
-						<Input style={{ width: 100 }} />
+						<InputNumber
+							style={{ width: 120 }}
+							min={0}
+							step={1000}
+							formatter={value =>
+								value !== undefined && value !== null
+									? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+									: ''
+							}
+
+						/>
 					</Form.Item>
 				</Flex>
-				<Form.Item label="Category" name={['category_id']}>
-					<select className="w-full rounded-lg border-blue-300">
-						{selectProps.options?.map(opt => (
-							<option key={opt.value} value={opt.value ?? ''}>
-								{opt.label}
-							</option>
-						))}
-					</select>
+				<Form.Item label="Category" name={['categories', 0, '_id']}>
+					<Select
+						selectProps={selectProps}
+						showSearch
+						placeholder="Chọn category"
+						optionFilterProp="label"
+					/>
 				</Form.Item>
 				<Flex gap={8} align="center">
 					<FormItemLabel label="Best sale" prefixCls="" />

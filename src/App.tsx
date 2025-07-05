@@ -19,7 +19,7 @@ function App() {
 	return (
 		<ConfigProvider theme={RefineThemes.Red}>
 			<BrowserRouter>
-				<GitHubBanner />
+
 				<RefineKbarProvider>
 					<ColorModeContextProvider>
 						<AntdApp>

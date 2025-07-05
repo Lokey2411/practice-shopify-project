@@ -10,6 +10,7 @@ import { useList, useUpdate, type BaseRecord } from '@refinedev/core'
 import { Button, Form, Input, Space, Table, Tag, message } from 'antd'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
+import AdminOrderStats from '../../components/AdminOrderStats'
 
 export const OrderList = () => {
     const [dataSource, setDataSource] = useState<readonly BaseRecord[]>([])
@@ -119,6 +120,7 @@ export const OrderList = () => {
 
     return (
         <div className="p-6 bg-blue-50 rounded-2xl shadow-lg">
+            <AdminOrderStats />
             <List canCreate={false}>
                 <Form layout='horizontal' className='grid grid-cols-3 gap-4 mb-6'>
                     <Form.Item label={<span className='font-semibold text-blue-700'>Status</span>} className='col-span-1'>
