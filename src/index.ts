@@ -12,11 +12,18 @@ import fs from 'fs'
 import conversation from './router/conversation.route'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
+import cors from 'cors'
 
 dotenv.config()
 
 const app = express()
 const httpServer = createServer(app)
+
+// Thêm middleware CORS cho toàn bộ app
+app.use(cors({
+	origin: ["http://localhost:5173", "http://localhost:3000"],
+	credentials: true
+}))
 
 const io = new Server(httpServer, {
 	cors: {
