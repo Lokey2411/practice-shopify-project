@@ -32,7 +32,7 @@ const Upload = ({ form, onUploadSuccess }: UploadPropsWithForm) => {
 				},
 			})
 			.then(res => {
-				setImageUploaded(res.data.imageUrl ?? '')
+				setImageUploaded(res.data.file_url ?? '')
 			})
 			.catch(error => {
 				console.error('Upload error:', error)

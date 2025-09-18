@@ -2,7 +2,6 @@ import Upload from '@/components/Upload'
 import { Create, useForm } from '@refinedev/antd'
 import { DatePicker, Form, Input, InputNumber } from 'antd'
 import { useEffect, useState } from 'react'
-import dayjs from 'dayjs'
 
 export const ProductCreate = () => {
 	const { formProps, saveButtonProps } = useForm({})
