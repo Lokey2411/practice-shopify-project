@@ -70,3 +70,29 @@ export const getAllOrders = async (req: Request, res: Response) => {
 		return res.status(STATUS.INTERNAL_SERVER_ERROR).json(`Lỗi khi lấy danh sách đơn hàng: ${(error as Error).message}`)
 	}
 }
+
+// Lấy danh sách sản phẩm của 1 đơn hàng
+export const getOrderProducts = async (req: Request, res: Response) => {
+	const { id } = req.params;
+	try {
+		const order = await Order.findById(id).populate('products.productId');
+		if (!order) {
+			return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+		}
+		// Map lại dữ liệu cho FE
+		const products = order.products.map((item: any) => {
+			const product = item.productId;
+			return {
+				id: product._id,
+				name: product.name,
+				image: product.images?.[0] || '',
+				variant: '',
+				priceAfterDiscount: Number(product.price),
+				quantity: Number(item.quantity),
+			};
+		});
+		return res.json({ data: products });
+	} catch (error) {
+		return res.status(500).json({ message: 'Lỗi server', error: error.message });
+	}
+};

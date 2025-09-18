@@ -7,12 +7,15 @@ import { getProfile, updateProfile, changePassword } from '@/controller/user/pro
 import { adminRequire } from '@/middleware/adminRequire'
 import { authMiddleware } from '@/middleware/auth'
 import jwt, { SignOptions } from 'jsonwebtoken'
+import { upload, uploadFile } from '@/controller/upload.controller'
+import { getFavorites } from '@/controller/user/favorite.controller'
 
 const express = require('express')
 const userRouter = express.Router()
 userRouter.get('/profile', authMiddleware, getProfile)
 userRouter.put('/profile', authMiddleware, updateProfile)
 userRouter.patch('/password', authMiddleware, changePassword)
+userRouter.post('/upload', upload.single('avatar'), uploadFile)
 
 userRouter.get('/', authMiddleware, adminRequire, getAllUsers)
 userRouter.put('/:id', authMiddleware, updateUser)
@@ -44,4 +47,7 @@ userRouter.post('/refresh-token', authMiddleware, (req, res) => {
 		return res.status(STATUS.UNAUTHORIZED).json({ message: 'Unauthorized - Invalid token' })
 	}
 })
+
+userRouter.get('/wishlist', authMiddleware, getFavorites)
+
 export default userRouter

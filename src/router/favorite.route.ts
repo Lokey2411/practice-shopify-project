@@ -7,6 +7,6 @@ const favoriteRouter = Router()
 favoriteRouter.get('/', authMiddleware, asyncHandler(getFavorites))
 favoriteRouter.post('/', authMiddleware, asyncHandler(addFavorite))
 favoriteRouter.put('/', authMiddleware, asyncHandler(updateFavorite))
-favoriteRouter.delete('/', authMiddleware, asyncHandler(removeFavorite))
+favoriteRouter.delete('/:productId', authMiddleware, asyncHandler(removeFavorite))
 
 export default favoriteRouter

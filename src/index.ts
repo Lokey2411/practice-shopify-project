@@ -6,12 +6,34 @@ import dotenv from 'dotenv'
 import connectDB from '@config/db'
 import { logger } from '@middleware/logger'
 import { errorHandler } from '@middleware/errorHandler'
+<<<<<<< HEAD
 import { PREFIX_PATH, PORT, STATUS } from './constants'
 import cloudinaryConfig from './config/cloudinary'
+=======
+import { PREFIX_PATH, PORT } from './constants'
+import path from 'path'
+import fs from 'fs'
+import conversation from './router/conversation.route'
+import { createServer } from 'http'
+import { Server } from 'socket.io'
+>>>>>>> ed6f1e2bd21aee641f907624de2778cb78022ef0
 
 dotenv.config()
 
 const app = express()
+const httpServer = createServer(app)
+
+const io = new Server(httpServer, {
+	cors: {
+		origin: ["http://localhost:3000", "http://localhost:5173"],
+		methods: ["GET", "POST"],
+		credentials: true
+	}
+})
+
+io.on('connection', (socket) => {
+	console.log('User connected:', socket.id)
+})
 
 /**
  * Cấu hình middleware cơ bản
@@ -31,8 +53,8 @@ app.use(errorHandler)
  */
 const startServer = async (): Promise<void> => {
 	await connectDB()
-	app.listen(PORT, () => {
-		console.log(`Server running on port ${PORT}`)
+	httpServer.listen(PORT, () => {
+		console.log(`Server + socket.io running on port ${PORT}`)
 	})
 }
 

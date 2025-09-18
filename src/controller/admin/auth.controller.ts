@@ -31,7 +31,9 @@ export const adminLogin = async (req: Request, res: Response) => {
 			return res.status(STATUS.FORBIDDEN).json('Thông tin đăng nhập không phải của admin')
 		}
 
-		const { password: userPassword, ...userData } = user // return userData without password
+		// Convert to plain object and remove password
+		const userData = user.toObject()
+		delete userData.password
 
 		const token = generateToken(String(user._id)) // NOSONAR
 		return res.json({ message: 'Đăng nhập thành công', token, data: userData })

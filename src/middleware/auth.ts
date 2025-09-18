@@ -39,6 +39,7 @@ export const authMiddleware = <P = any>(req: AuthRequest<P>, res: Response, next
 	try {
 		const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload
 		req.user = decoded
+		const userId = (req as any).user.id;
 		next()
 	} catch (error) {
 		res.status(STATUS.UNAUTHORIZED).json({ message: 'Unauthorized - Invalid token' })

@@ -16,8 +16,9 @@ interface FavoriteParams {
  * @requires productId - ID của sản phẩm (bắt buộc)
  */
 export const addFavorite = async (req: Request, res: Response) => {
-	const { userId } = (req as any).user
-	const { productId } = req.body
+	const userId = (req as any).user.userId;
+	const { productId } = req.body;
+	console.log('userId:', userId, 'productId:', productId);
 
 	if (!productId) {
 		return res.status(STATUS.BAD_REQUEST).json('ID sản phẩm là bắt buộc')
@@ -42,7 +43,7 @@ export const addFavorite = async (req: Request, res: Response) => {
  * @requires products - Danh sách sản phẩm yêu thích (bắt buộc)
  */
 export const updateFavorite = async (req: Request, res: Response) => {
-	const { userId } = (req as any).user
+	const userId = (req as any).user.userId;
 	const { products } = req.body
 
 	if (!products) {
@@ -65,7 +66,7 @@ export const updateFavorite = async (req: Request, res: Response) => {
  * @requires productId - ID của sản phẩm (bắt buộc trong params)
  */
 export const removeFavorite = async (req: Request<FavoriteParams>, res: Response) => {
-	const { userId } = (req as any).user
+	const userId = (req as any).user.userId;
 	const { productId } = req.params
 
 	try {
@@ -88,7 +89,7 @@ export const removeFavorite = async (req: Request<FavoriteParams>, res: Response
  * @optional sortOrder - Thứ tự sắp xếp (asc/desc)
  */
 export const getFavorites = async (req: Request, res: Response) => {
-	const { userId } = (req as any).user
+	const userId = (req as any).user.userId;
 
 	try {
 		const filterQuery: FavoriteDocument = {
@@ -114,7 +115,7 @@ export const getFavorites = async (req: Request, res: Response) => {
  * @optional sortOrder - Thứ tự sắp xếp (asc/desc)
  */
 export const getFavoritesByCategory = async (req: Request<FavoriteParams>, res: Response) => {
-	const { userId } = (req as any).user
+	const userId = (req as any).user.userId;
 	const { categoryId } = req.params
 
 	try {
@@ -138,7 +139,7 @@ export const getFavoritesByCategory = async (req: Request<FavoriteParams>, res: 
  * @requires productId - ID của sản phẩm (bắt buộc trong params)
  */
 export const getFavoriteByProduct = async (req: Request<FavoriteParams>, res: Response) => {
-	const { userId } = (req as any).user
+	const userId = (req as any).user.userId;
 	const { productId } = req.params
 
 	try {
