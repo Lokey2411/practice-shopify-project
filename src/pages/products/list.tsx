@@ -1,6 +1,7 @@
-import { DeleteButton, EditButton, List, ShowButton, useTable } from '@refinedev/antd'
+import { EditButton, List, ShowButton, useTable } from '@refinedev/antd'
 import type { BaseRecord } from '@refinedev/core'
 import { Space, Table } from 'antd'
+import DeleteButton from '@/components/DeleteButton'
 
 export const ProductList = () => {
 	const { tableProps } = useTable({
@@ -23,7 +24,7 @@ export const ProductList = () => {
 						<Space>
 							<EditButton hideText size='small' recordItemId={record.id} />
 							<ShowButton hideText size='small' recordItemId={record.id} />
-							<DeleteButton hideText size='small' recordItemId={record.id} />
+							<DeleteButton id={record?.id ?? ""} />
 						</Space>
 					)}
 				/>

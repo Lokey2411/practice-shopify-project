@@ -1,8 +1,9 @@
 import { Button, Modal, notification, theme } from 'antd'
-import { BaseKey, useDelete } from '@refinedev/core'
+import { BaseKey, useDelete, useResource } from '@refinedev/core'
 import { DeleteOutlined } from '@ant-design/icons'
 
 const DeleteButton = ({ id }: { id: BaseKey }) => {
+	const { resource } = useResource();
 	const { mutate: deleteItem } = useDelete()
 	const handleDelete = () => {
 		Modal.confirm({
@@ -12,7 +13,7 @@ const DeleteButton = ({ id }: { id: BaseKey }) => {
 			onOk: () => {
 				deleteItem(
 					{
-						resource: 'categories',
+						resource: `${resource?.list}`,
 						id,
 					},
 					{
@@ -27,7 +28,7 @@ const DeleteButton = ({ id }: { id: BaseKey }) => {
 							console.error('Delete error:', error)
 							notification.error({
 								message: 'Lỗi xóa',
-								description: error.message || 'Không thể xóa bản ghi',
+								description: error.message ?? 'Không thể xóa bản ghi',
 							})
 						},
 					},
