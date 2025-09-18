@@ -6,6 +6,7 @@ import { FilterQuery } from 'mongoose'
  * @param allowedFields - Các trường được phép lọc
  * @returns {FilterQuery<any>} - Bộ lọc đã được xử lý
  */
+
 export const applyFilter = <T>(query: T, allowedFields: (keyof T)[]): FilterQuery<T> => {
 	const filter: FilterQuery<T> = { isDeleted: false } // Mặc định lọc các bản ghi chưa bị xóa
 

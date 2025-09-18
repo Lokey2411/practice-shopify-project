@@ -6,7 +6,6 @@ import orderRoute from './orders.route'
 import saleRouter from './sales.route'
 import sliderRouter from './slider.route'
 import reviewRouter from './review.route'
-import uploadRouter from './upload.route'
 import favoriteRouter from './favorite.route'
 
 const routes = [
@@ -41,10 +40,6 @@ const routes = [
 	{
 		path: '/users',
 		router: userRouter,
-	},
-	{
-		path: '/upload',
-		router: uploadRouter,
 	},
 	{
 		path: '/favorites',
