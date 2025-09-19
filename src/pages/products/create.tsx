@@ -1,12 +1,16 @@
 import Upload from '@/components/Upload'
-import { Create, useForm } from '@refinedev/antd'
+import { Create, useForm, useSelect } from '@refinedev/antd'
 import { DatePicker, Form, Input, InputNumber } from 'antd'
 import { useEffect, useState } from 'react'
-
+import Select from '@/components/Select'
 export const ProductCreate = () => {
 	const { formProps, saveButtonProps } = useForm({})
 	const [image, setImage] = useState('')
-
+	const { selectProps } = useSelect({
+		resource: 'categories',
+		optionLabel: item => item.name,
+		optionValue: item => item._id,
+	})
 	const handleUploadSuccess = (url: string) => {
 		formProps.form?.setFieldsValue({ images: [url] }) // Cập nhật field image trong form;
 		setImage(url)
@@ -77,6 +81,9 @@ export const ProductCreate = () => {
 						},
 					]}>
 					<DatePicker picker='year' format={'YYYY'} />
+				</Form.Item>
+				<Form.Item label={'Category'} name={['categories']} rules={[{ required: true }]}>
+					<Select selectProps={selectProps} dropdownStyle={{ maxHeight: 200 }} />
 				</Form.Item>
 				<Form.Item
 					label={'Number of pages'}
